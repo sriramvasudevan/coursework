@@ -2,7 +2,7 @@
  * File:   main.c
  * Author: sriram
  *
- * Created on 5 August, 2012, 7:24 PM
+ * Created on 30 July, 2012, 2:34 PM
  */
 
 #include <stdio.h>
@@ -18,13 +18,21 @@ int main(int argc, char** argv) {
     printf("\nEnter N, X and Y:\n");
     scanf("%d %d %d",&n, &x, &y);  //accept values
     
-    for(i=1;i<n;i++)
+    if(n>0&&x>0&&y>0)
     {
-        if ((i%x==0)||(i%y==0))  //check if multiple of x or y
-            sum+=i;
+        for(i=1;i<n;i++)
+        {
+                if ((i%x==0)||(i%y==0))  //check if multiple of x or y
+                    sum+=i;
+        }
+        
+        printf("\nsum=%ld\n",sum); //display result
     }
     
-    printf("\nsum=%ld\n",sum); //display result
+    else
+    {
+        printf("\nEntered Values aren't natural numbers.\n");
+    }
     return (EXIT_SUCCESS);
 }
 
