@@ -45,10 +45,10 @@ void palindrome(char* string, int length) //function to compare first and last c
 }
 
 int main(int argc, char** argv) {
-    char* string; //declare variables
+    char string[30]; //declare variables
     
     printf("\nEnter the string:\n");
-    gets(string); //accept values
+    fgets(string,30,stdin); //accept values
     
     int length;
     for(length=0;string[length]!='\0';length++); //calculate length with empty loop

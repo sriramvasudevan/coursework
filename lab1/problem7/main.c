@@ -25,17 +25,17 @@ void reverse(char* string, int length) //function to swap first and last chars o
 }
 
 int main(int argc, char** argv) {
-    char* string; //declare variables
+    char string1[30]; //declare variables
     
     printf("\nEnter the string:\n");
-    gets(string); //accept values
+    fgets(string1,30,stdin); //accept values
     
     int length;
-    for(length=0;string[length]!='\0';length++); //calculate length with empty loop
+    for(length=0;string1[length]!='\0';length++); //calculate length with empty loop
     length--; //value of last index of string
     
-    reverse(string,length);  //reverse string
-    printf("\n%s\n",string); //display result
+    reverse(string1,length);  //reverse string
+    printf("\n%s\n",string1); //display result
     
     return (EXIT_SUCCESS);
 }

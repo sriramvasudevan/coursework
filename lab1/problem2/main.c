@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     printf("\nEnter N, X and Y:\n");
     scanf("%d %d %d",&n, &x, &y);  //accept values
     
-    if(n>0&&x>0&&y>0)
+    if(n>0 && x>0 && y>0)
     {
         for(i=1;i<n;i++)
         {
