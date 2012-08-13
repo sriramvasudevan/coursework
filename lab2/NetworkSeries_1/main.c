@@ -7,7 +7,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "singly.c"
+#include "packet.h"
+#include "singly.h"
 
 /*
  * Simulating a Network Buffer

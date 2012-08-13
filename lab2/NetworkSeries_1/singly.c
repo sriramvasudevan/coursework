@@ -1,9 +1,6 @@
 #include <string.h>
 #include <malloc.h>
-#include "packet.h"
 #include "singly.h"
-
-struct Packet *last = NULL;
 
 void receive()
 {

@@ -17,7 +17,8 @@ extern "C" {
         char message[50];
         struct Packet *next;
     };
-
+    
+struct Packet *last = NULL;
 
 
 

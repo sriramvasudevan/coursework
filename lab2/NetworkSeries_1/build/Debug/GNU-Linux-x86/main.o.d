@@ -1,7 +1,7 @@
-build/Debug/GNU-Linux-x86/main.o: main.c singly.c packet.h singly.h
+build/Debug/GNU-Linux-x86/main.o: main.c singly.c singly.h packet.h
 
 singly.c:
 
-packet.h:
-
 singly.h:
+
+packet.h:
