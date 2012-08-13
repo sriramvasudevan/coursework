@@ -7,7 +7,7 @@ struct Packet *last=NULL;
 void receive()
 {
     struct Packet *packet=(struct Packet*)malloc(sizeof(struct Packet));
-    
+    fflush(stdin);
     printf("\nEnter sender's address:\n");
     fgets(packet->sender,50,stdin);
     printf("\nEnter receiver's address:\n");
@@ -33,7 +33,7 @@ void printall()
     printf("\nMessages:\n");
     for(i=last;i!=NULL;i=i->next)
     {
-        printf("-%s\n",i->message);
+        printf("->Sender: %s Receiver: %s Message: %s\n",i->sender,i->receiver,i->message);
         
     }
 }

@@ -16,6 +16,7 @@
 int main(int argc, char** argv) {
     char cont='y';
     int choice=0;
+    char clearbuffer;
     
     while(cont=='y')
     {
@@ -27,6 +28,7 @@ int main(int argc, char** argv) {
         printf("5. Print all messages from buffer\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
+        scanf("%c", &clearbuffer);
         switch(choice)
         {
             case 1:
