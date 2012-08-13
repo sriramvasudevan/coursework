@@ -18,7 +18,7 @@ extern "C" {
         struct Packet *next;
     };
     
-struct Packet *last = NULL;
+extern struct Packet *last;
 
 
 

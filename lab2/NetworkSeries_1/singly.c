@@ -1,6 +1,8 @@
 #include <string.h>
 #include <malloc.h>
-#include "singly.h"
+#include "packet.h"
+
+struct Packet *last=NULL;
 
 void receive()
 {
@@ -28,7 +30,7 @@ void del()
 void printall()
 {
     struct Packet *i;
-    printf("\nMessages:\n:");
+    printf("\nMessages:\n");
     for(i=last;i!=NULL;i=i->next)
     {
         printf("-%s\n",i->message);
