@@ -2,120 +2,152 @@
 #include <malloc.h>
 #include "packet.h"
 
-struct Packet *last=NULL;
+struct Packet *last = NULL;
 
-void receive()
-{
-    struct Packet *packet=(struct Packet*)malloc(sizeof(struct Packet));
-    fflush(stdin);
-    printf("\nEnter sender's address:\n");
-    fgets(packet->sender,50,stdin);
-    printf("\nEnter receiver's address:\n");
-    fgets(packet->receiver,50,stdin);
-    printf("\nEnter message:\n");
-    fgets(packet->message,50,stdin);    
-    
-    packet->next=last;
+void receiveMessage() {
+
+    struct Packet *packet = (struct Packet*) malloc(sizeof (struct Packet));
+
+    printf("\nEnter sender's address:  ");
+    fgets(packet->sender, 50, stdin);
+
+    printf("\nEnter receiver's address:  ");
+    fgets(packet->receiver, 50, stdin);
+
+    printf("\nEnter message:  ");
+    fgets(packet->message, 50, stdin);
+
+    packet->next = last;
     last = packet;
+    
+    printf("\nMessage Received.");
 }
 
-void del()
-{
-    struct Packet *temp = NULL;
-    temp = last;
+void deleteLast() {
+
+    struct Packet *temporary = NULL;
+    temporary = last;
     last = last->next;
-    free(temp);
+    free(temporary);
 }
 
-void printall()
-{
-    struct Packet *i;
+void printAllMessages() {
+
+    struct Packet *currentnode = NULL;
+
     printf("\nMessages:\n");
-    for(i=last;i!=NULL;i=i->next)
-    {
-        printf("->Sender: %s Receiver: %s Message: %s\n",i->sender,i->receiver,i->message);
-        
+    for (currentnode = last; currentnode != NULL; currentnode = currentnode->next) {
+
+        printf("-> Sender: %s Receiver: %s Message: %s\n", currentnode->sender, currentnode->receiver, currentnode->message);
     }
 }
 
-void send()
-{
-    struct Packet *i;
-    char str[50];
-    printall();
+void sendMessage() {
+
+    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    char messagechoice[50];
+
+    printAllMessages();
     printf("\nEnter the message of your choice to be sent:\n");
-    fgets(str,50,stdin);
-    for(i=last;i!=NULL;i=i->next)
-    {
-        if (strcmp(i->message,str)==0)
-        {
-            printf("Sender:%s\nReceiver:%s\nMessage:%s\n",i->sender,i->receiver,i->message);
-            
-            if(i==last)
-                del();
-            else
-            {
-                struct Packet *temp=i;
-                (i-1)->next = i->next;
-                free(temp);
+    fgets(messagechoice, 50, stdin);
+
+    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+        nextnode = currentnode->next;
+
+        if (strcmp(currentnode->message, messagechoice) == 0) {
+
+            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+
+            if (currentnode == last) {
+                deleteLast();
             }
+            
+            else {
+                previousnode->next = currentnode->next;
+                free(currentnode);
+                currentnode = NULL;
+            }
+            
             printf("Message Sent.\n");
         }
+
+        if (currentnode) {
+            previousnode = currentnode;
+        }
+
     }
-    
+
 }
 
-void sendallsender()
-{
-    struct Packet *i;
-    char str[50];
-    
-    printall();
+void sendAllSenderMessages() {
+
+    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    char senderchoice[50];
+
+    printAllMessages();
     printf("\nEnter the sender of your choice:\n");
-    fgets(str,50,stdin);
-    for(i=last;i!=NULL;i=i->next)
-    {
-        if (strcmp(i->sender,str)==0)
-        {
-            printf("Sender:%s\nReceiver:%s\nMessage:%s\n",i->sender,i->receiver,i->message);
-            
-            if(i==last)
-                del();
-            else
-            {
-                struct Packet *temp=i;
-                (i-1)->next = i->next;
-                free(temp);
-            }
-            printf("Message Sent.\n");
-        }
-    }
+    fgets(senderchoice, 50, stdin);
+
+    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+        nextnode = currentnode->next;
         
+        if (strcmp(currentnode->sender, senderchoice) == 0) {
+
+            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+
+            if (currentnode == last) {
+                deleteLast();
+            }
+            
+            else {
+                previousnode->next = currentnode->next;
+                free(currentnode);
+                currentnode = NULL;
+            }
+
+            printf("Message(s) Sent.\n");
+        }
+
+        if (currentnode) {
+            previousnode = currentnode;
+        }
+
+    }
+
 }
 
-void sendallreceiver()
-{
-    struct Packet *i;
-    char str[50];
-    printall();
+void sendAllReceiverMessages() {
+
+    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    char receiverchoice[50];
+
+    printAllMessages();
     printf("\nEnter the receiver of your choice:\n");
-    fgets(str,50,stdin);
-    for(i=last;i!=NULL;i=i->next)
-    {
-        if (strcmp(i->receiver,str)==0)
-        {
-            printf("Sender:%s\nReceiver:%s\nMessage:%s\n",i->sender,i->receiver,i->message);
-            
-            if(i==last)
-                del();
-            else
-            {
-                struct Packet *temp=i;
-                (i-1)->next = i->next;
-                free(temp);
-            }
-            printf("Message Sent.\n");
-        }
-    }
+    fgets(receiverchoice, 50, stdin);
+
+    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+        nextnode = currentnode->next;
         
+        if (strcmp(currentnode->receiver, receiverchoice) == 0) {
+            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+            
+            if (currentnode == last) {
+                deleteLast();
+            }
+            
+            else {
+                previousnode->next = currentnode->next;
+                free(currentnode);
+                currentnode = NULL;
+            }
+            
+            printf("Message(s) Sent.\n");
+        }
+
+        if (currentnode) {
+            previousnode = currentnode;
+        }
+
+    }
+
 }

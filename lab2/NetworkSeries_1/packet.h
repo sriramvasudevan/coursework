@@ -11,14 +11,15 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
+
     struct Packet {
         char sender[50];
         char receiver[50];
         char message[50];
         struct Packet *next;
     };
-    
-extern struct Packet *last;
+
+    extern struct Packet *last;
 
 
 

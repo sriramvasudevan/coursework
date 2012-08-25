@@ -10,46 +10,65 @@
 #include "singly.h"
 
 /*
- * Simulating a Network Buffer
+ * Simulating a Network Buffer.
  */
 
 int main(int argc, char** argv) {
-    char cont='y';
-    int choice=0;
+
+    int choice = 0;
     char clearbuffer;
-    
-    while(cont=='y')
-    {
-        printf("******MENU******\n");
-        printf("1. Receive message into buffer\n");
-        printf("2. Send a particular message from buffer\n");
-        printf("3. Send all messages from a particular sender\n");
-        printf("4. Send all messages from a particular receiver\n");
-        printf("5. Print all messages from buffer\n");
-        printf("Enter your choice: ");
+
+    while (1) {
+
+        printf("**************************\n");
+        printf("*          MENU          *\n");
+        printf("**************************\n\n");
+
+        printf("1. Receive a message into the buffer.\n");
+        printf("2. Send a particular message from the buffer.\n");
+        printf("3. Send all messages from a particular sender.\n");
+        printf("4. Send all messages to a particular receiver.\n");
+        printf("5. Print all messages in the buffer.\n");
+        printf("6. Exit.\n\n");
+
+        printf("Enter your choice:  ");
         scanf("%d", &choice);
         scanf("%c", &clearbuffer);
-        switch(choice)
-        {
+
+        switch (choice) {
+
             case 1:
-                receive();
+                receiveMessage();
                 break;
+
             case 2:
-                send();
+                sendMessage();
                 break;
+
             case 3:
-                sendallsender();
+                sendAllSenderMessages();
                 break;
+
             case 4:
-                sendallreceiver();
+                sendAllReceiverMessages();
                 break;
+
             case 5:
-                printall();
+                printAllMessages();
                 break;
+
+            case 6:
+                exit(0);
+                break;
+
             default:
-                printf("Invalid choice. Try again.\n");    
+                printf("\nInvalid choice. Please try again.\n");
+                break;
         }
+
     }
+
     return (EXIT_SUCCESS);
+
 }
 

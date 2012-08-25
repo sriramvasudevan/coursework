@@ -11,12 +11,13 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    void receive();
-    void printall();
-    void send();
-    void sendallsender();
-    void sendallreceiver();
-    
+
+    void receiveMessage();
+    void printAllMessages();
+    void sendMessage();
+    void sendAllSenderMessages();
+    void sendAllReceiverMessages();
+
 #ifdef	__cplusplus
 }
 #endif
