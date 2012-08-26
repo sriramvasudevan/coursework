@@ -12,11 +12,11 @@
 extern "C" {
 #endif
 
-    void receiveMessage();
-    void printAllMessages();
-    void sendMessage();
-    void sendAllSenderMessages();
-    void sendAllReceiverMessages();
+    void singly_receiveMessage();
+    void singly_printAllMessages();
+    void singly_sendMessage();
+    void singly_sendAllSenderMessages();
+    void singly_sendAllReceiverMessages();
 
 #ifdef	__cplusplus
 }

@@ -12,16 +12,24 @@
 extern "C" {
 #endif
 
-    struct Packet {
+    struct singly_Packet {
         char sender[50];
         char receiver[50];
         char message[50];
-        struct Packet *next;
+        struct singly_Packet *next;
     };
 
-    extern struct Packet *last;
+    extern struct singly_Packet *last;
 
+    struct doubly_Packet {
+        char sender[50];
+        char receiver[50];
+        char message[50];
+        struct doubly_Packet *prev;
+        struct doubly_Packet *next;
+    };
 
+    extern struct doubly_Packet *current;
 
 #ifdef	__cplusplus
 }

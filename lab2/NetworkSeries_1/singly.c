@@ -2,152 +2,183 @@
 #include <malloc.h>
 #include "packet.h"
 
-struct Packet *last = NULL;
+struct singly_Packet *last = NULL;
 
-void receiveMessage() {
+void singly_receiveMessage() {
 
-    struct Packet *packet = (struct Packet*) malloc(sizeof (struct Packet));
+    struct singly_Packet *packet = (struct singly_Packet*) malloc(sizeof (struct singly_Packet));
 
     printf("\nEnter sender's address:  ");
     fgets(packet->sender, 50, stdin);
 
-    printf("\nEnter receiver's address:  ");
+    printf("Enter receiver's address:  ");
     fgets(packet->receiver, 50, stdin);
 
-    printf("\nEnter message:  ");
+    printf("Enter message:  ");
     fgets(packet->message, 50, stdin);
 
     packet->next = last;
     last = packet;
-    
-    printf("\nMessage Received.");
+
+    printf("\nMessage Received.\n");
 }
 
-void deleteLast() {
+void singly_deleteLast() {
 
-    struct Packet *temporary = NULL;
+    struct singly_Packet *temporary = NULL;
     temporary = last;
     last = last->next;
     free(temporary);
 }
 
-void printAllMessages() {
+void singly_printAllMessages() {
 
-    struct Packet *currentnode = NULL;
+    struct singly_Packet *currentnode = NULL;
 
     printf("\nMessages:\n");
-    for (currentnode = last; currentnode != NULL; currentnode = currentnode->next) {
 
-        printf("-> Sender: %s Receiver: %s Message: %s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+    if (last) {
+        for (currentnode = last; currentnode != NULL; currentnode = currentnode->next) {
+
+            printf("-> Sender: %s   Receiver: %s   Message: %s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+        }
+    } 
+    else {
+        printf("\nNo messages present in the buffer.\n");
     }
 }
 
-void sendMessage() {
+void singly_sendMessage() {
 
-    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char messagechoice[50];
+    int flag = 0;
 
-    printAllMessages();
-    printf("\nEnter the message of your choice to be sent:\n");
-    fgets(messagechoice, 50, stdin);
+    singly_printAllMessages();
 
-    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
-        nextnode = currentnode->next;
+    if (last) {
+        printf("\nEnter the message of your choice to be sent:\n");
+        fgets(messagechoice, 50, stdin);
 
-        if (strcmp(currentnode->message, messagechoice) == 0) {
+        for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+            nextnode = currentnode->next;
 
-            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+            if (strcmp(currentnode->message, messagechoice) == 0) {
 
-            if (currentnode == last) {
-                deleteLast();
-            }
-            
-            else {
-                previousnode->next = currentnode->next;
-                free(currentnode);
+                flag = 1;
+                printf("-> Sender:%s   Receiver:%s   Message:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+
+                if (currentnode == last) {
+                    singly_deleteLast();
+                } 
+                else {
+                    previousnode->next = currentnode->next;
+                    free(currentnode);
+                }
                 currentnode = NULL;
+
+                printf("Message Sent.\n");
             }
-            
-            printf("Message Sent.\n");
+
+            if (currentnode) {
+                previousnode = currentnode;
+            }
+
         }
 
-        if (currentnode) {
-            previousnode = currentnode;
+        if (!flag) {
+            printf("\nNo messages matched your choice.\n");
         }
-
     }
 
 }
 
-void sendAllSenderMessages() {
+void singly_sendAllSenderMessages() {
 
-    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char senderchoice[50];
+    int flag = 0;
 
-    printAllMessages();
-    printf("\nEnter the sender of your choice:\n");
-    fgets(senderchoice, 50, stdin);
+    singly_printAllMessages();
 
-    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
-        nextnode = currentnode->next;
-        
-        if (strcmp(currentnode->sender, senderchoice) == 0) {
+    if (last) {
+        printf("\nEnter the sender of your choice:\n");
+        fgets(senderchoice, 50, stdin);
 
-            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+        for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+            nextnode = currentnode->next;
 
-            if (currentnode == last) {
-                deleteLast();
-            }
-            
-            else {
-                previousnode->next = currentnode->next;
-                free(currentnode);
+            if (strcmp(currentnode->sender, senderchoice) == 0) {
+
+                flag = 1;
+                printf("-> Sender:%s   Receiver:%s   Message:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+
+                if (currentnode == last) {
+                    singly_deleteLast();
+                } 
+                else {
+                    previousnode->next = currentnode->next;
+                    free(currentnode);
+                }
                 currentnode = NULL;
+
+                printf("Message Sent.\n");
             }
 
-            printf("Message(s) Sent.\n");
+            if (currentnode) {
+                previousnode = currentnode;
+            }
+
         }
 
-        if (currentnode) {
-            previousnode = currentnode;
+        if (!flag) {
+            printf("\nNo sender matched your choice.\n");
         }
-
     }
 
 }
 
-void sendAllReceiverMessages() {
+void singly_sendAllReceiverMessages() {
 
-    struct Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char receiverchoice[50];
+    int flag = 0;
 
-    printAllMessages();
-    printf("\nEnter the receiver of your choice:\n");
-    fgets(receiverchoice, 50, stdin);
+    singly_printAllMessages();
 
-    for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
-        nextnode = currentnode->next;
-        
-        if (strcmp(currentnode->receiver, receiverchoice) == 0) {
-            printf("-> Sender:%s\nReceiver:%s\nMessage:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
-            
-            if (currentnode == last) {
-                deleteLast();
-            }
-            
-            else {
-                previousnode->next = currentnode->next;
-                free(currentnode);
+    if (last) {
+        printf("\nEnter the receiver of your choice:\n");
+        fgets(receiverchoice, 50, stdin);
+
+        for (currentnode = last; currentnode != NULL; currentnode = nextnode) {
+            nextnode = currentnode->next;
+
+            if (strcmp(currentnode->receiver, receiverchoice) == 0) {
+
+                flag = 1;
+                printf("-> Sender:%s   Receiver:%s   Message:%s\n", currentnode->sender, currentnode->receiver, currentnode->message);
+
+                if (currentnode == last) {
+                    singly_deleteLast();
+                }
+                else {
+                    previousnode->next = currentnode->next;
+                    free(currentnode);
+                }
                 currentnode = NULL;
+
+                printf("Message Sent.\n");
             }
-            
-            printf("Message(s) Sent.\n");
+
+            if (currentnode) {
+                previousnode = currentnode;
+            }
+
         }
 
-        if (currentnode) {
-            previousnode = currentnode;
+        if (!flag) {
+            printf("\nNo receiver matched your choice.\n");
         }
-
     }
 
 }
