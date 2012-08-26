@@ -12,6 +12,10 @@
 extern "C" {
 #endif
 
+    /********************************************************/
+    /*        Singly linked list function definitions.      */
+    /********************************************************/
+    
     void singly_receiveMessage();
     void singly_printAllMessages();
     void singly_sendMessage();

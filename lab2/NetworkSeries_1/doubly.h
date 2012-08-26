@@ -11,7 +11,11 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
+    
+    /********************************************************/
+    /*  Circular, doubly linked list function definitions.  */
+    /********************************************************/
+    
     void doubly_receiveMessage();
     void doubly_printAllMessages();
     void doubly_sendMessage();
