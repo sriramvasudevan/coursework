@@ -37,7 +37,7 @@ void singly_receiveMessage() {
 /*  The deletion of the 'last' pointer is a special case of node deletion in a   */
 /*                                singly linked list.                            */
 /*********************************************************************************/
-void singly_deleteLast() {
+void singlyDeleteLast() {
 
     struct singly_Packet *temporary = NULL; //Temporary pointer to keep track of the 'last' pointer.
     temporary = last;
@@ -101,7 +101,7 @@ void singly_sendMessage() {
                                                                     currentnode->message);
 
                 if (currentnode == last) {                           //Special case.
-                    singly_deleteLast();
+                    singlyDeleteLast();
                 }
                 else {
                     previousnode->next = currentnode->next;          //Modify the pointer links in the list.
@@ -155,7 +155,7 @@ void singly_sendAllSenderMessages() {
                                                                     currentnode->message);
 
                 if (currentnode == last) {             //Special case.
-                    singly_deleteLast();
+                    singlyDeleteLast();
                 }
                 else {
                     previousnode->next = currentnode->next;  //Modify the pointer links in the list.
@@ -209,7 +209,7 @@ void singly_sendAllReceiverMessages() {
                                                                     currentnode->message);
 
                 if (currentnode == last) {                          //Special case.
-                    singly_deleteLast();
+                    singlyDeleteLast();
                 } else {
                     previousnode->next = currentnode->next;  //Modify the pointer links in the list.
                     free(currentnode);
