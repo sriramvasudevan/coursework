@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /*
  * 
@@ -15,12 +16,12 @@
 int main(int argc, char** argv) {
 
     FILE *inputfile;
-    char filename[] = "input1";
+    char inputfilename[] = "input1";
     char listOfWords1[150][50];
     char listOfWords2[150][50];
     char word[50];
     
-    inputfile = fopen (filename, "r");
+    inputfile = fopen (inputfilename, "r");
     
     if (inputfile == NULL) {
         printf("ERROR IN FILE OPENING.");
@@ -60,8 +61,8 @@ int main(int argc, char** argv) {
     printf("%d\n", n1);
     fclose(inputfile);
 
-    strcpy(filename, "input2");
-    inputfile = fopen (filename, "r");
+    strcpy(inputfilename, "input2");
+    inputfile = fopen (inputfilename, "r");
     while (fscanf(inputfile, "%s", word) == 1) {
         for(i=0; i!=n2; i++) {
             if (listOfWords2[i] == word) {
@@ -90,17 +91,24 @@ int main(int argc, char** argv) {
     fclose(inputfile);
 
     int I=0;
+    int U=0;
+    FILE *outputfile;
+    char outputfilename[] = "output.txt";
+    outputfile = fopen (outputfilename, "w");
     
+    fprintf (outputfile, "Common Words:\n");
     for(i=0; i!=n1; i++) {
         for(j=0; j!=n2; j++) {
-            if (listOfWords1[i] == listOfWords2[j]) {
+            if (strcmp(tolower(listOfWords1[i]), tolower(listOfWords2[j])) == 0) {
                 I++;
-            }
-            else {
-                
+                fprintf (outputfile, "->%s\n", listOfWords2[j]);
             }
         }
     }
+    
+    U=n1+n2-I;
+    float S = (float)I/U;
+    fprintf (outputfile, "\nSimilarity of the 2 files = %f\n", S);
     return (EXIT_SUCCESS);
 }
 

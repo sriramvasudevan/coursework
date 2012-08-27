@@ -1,0 +1,6 @@
+Common Words:
+->Whats
+->up
+->you
+
+Similarity of the 2 files = 0.300000
