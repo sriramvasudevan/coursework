@@ -3,4 +3,4 @@ Common Words:
 ->up
 ->you
 
-Similarity of the 2 files = 0.300000
+Similarity of the 2 files = 0.272727
