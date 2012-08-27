@@ -11,7 +11,8 @@ struct doubly_Packet *current = NULL;  //Pointer to keep track of the last node 
 /***************************************************************************/
 void doubly_receiveMessage() {
 
-    struct doubly_Packet *packet = (struct doubly_Packet*) malloc(sizeof (struct doubly_Packet)); //create a new node.
+    //create a new node.
+    struct doubly_Packet *packet = (struct doubly_Packet*) malloc(sizeof (struct doubly_Packet));
 
     //Accept values for the node from the user.
     printf("\nEnter sender's address:  ");
@@ -34,7 +35,7 @@ void doubly_receiveMessage() {
 
         current = packet;
     } 
-    else {                                      //If it is the first node being added to the list.
+    else {                    //If it is the first node being added to the list.
         current = packet;
         //Make the 2 pointers refer to the new node itself.
         packet->prev = current;
@@ -55,7 +56,7 @@ void doubly_deleteCurrent() {
     struct doubly_Packet *temporary = NULL;
     temporary = current;
 
-    if (current->next == current) {               //If it is the only node in the list.
+    if (current->next == current) {        //If it is the only node in the list.
         free(current);
         current = NULL;
     } 
@@ -100,7 +101,8 @@ void doubly_printAllMessages() {
 /*********************************************************************************/
 void doubly_sendMessage() {
 
-    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;  //Pointers to track nodes.
+    //Pointers to track nodes.
+    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;
     char messagechoice[50]; //String to accept user's choice.
     int flag = 0; //Flag to check if the user's message exists.
 
@@ -150,7 +152,8 @@ void doubly_sendMessage() {
 /*********************************************************************************/
 void doubly_sendAllSenderMessages() {
 
-    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;  //Pointers to keep track of nodes.
+    //Pointers to keep track of nodes.
+    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;
     char senderchoice[50];  //String to store user's choice.
     int flag = 0;  //Flag to check if the user's choice exists in the buffer.
 
@@ -200,7 +203,8 @@ void doubly_sendAllSenderMessages() {
 /**********************************************************************************/
 void doubly_sendAllReceiverMessages() {
 
-    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;   //Pointers to keep track of nodes.
+    //Pointers to keep track of nodes.
+    struct doubly_Packet *currentnode = current, *nextnode = NULL, *loopstart = NULL;
     char receiverchoice[50]; //String to store user's choice.
     int flag = 0;  //Flag to check if user's choice exists in the buffer.
 

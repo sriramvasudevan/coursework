@@ -38,7 +38,8 @@ void menu(int* choice) {
 
     printf("Enter your choice:  ");
     scanf("%d", choice);
-    scanf("%c", &clearbuffer); //Used to clear the buffer. If it isn't used, '\n' is taken as input by fgets() from buffer.
+    scanf("%c", &clearbuffer); //Used to clear the buffer. If it isn't used, '\n'
+                               //is taken as input by fgets() from buffer.
 }
 
 

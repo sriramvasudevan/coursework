@@ -8,11 +8,11 @@ struct singly_Packet *last = NULL; //Pointer to keep track of the last node in t
 /***************************************************************************/
 /*  This function creates a new node, accepts values for it from the user  */
 /*               and adds it at the end of the linked list.                */
-
 /***************************************************************************/
 void singly_receiveMessage() {
 
-    struct singly_Packet *packet = (struct singly_Packet*) malloc(sizeof (struct singly_Packet)); //Create a new node.
+    //Create a new node.
+    struct singly_Packet *packet = (struct singly_Packet*) malloc(sizeof (struct singly_Packet));
 
     //Accept values.
     printf("\nEnter sender's address:  ");
@@ -76,7 +76,8 @@ void singly_printAllMessages() {
 /*********************************************************************************/
 void singly_sendMessage() {
 
-    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;  //pointers to track nodes.
+    //pointers to track nodes.
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char messagechoice[50];  //string to store user's choice.
     int flag = 0; //flag to check if a matching message exists in the buffer.
 
@@ -112,7 +113,8 @@ void singly_sendMessage() {
             }
 
             if (currentnode) {
-                previousnode = currentnode;   //Set the new previous node to the current node, only if it exists.
+                //Set the new previous node to the current node, only if it exists.
+                previousnode = currentnode;
             }
 
         }
@@ -130,7 +132,8 @@ void singly_sendMessage() {
 /*********************************************************************************/
 void singly_sendAllSenderMessages() {
 
-    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;   //pointers to track nodes.
+    //pointers to track nodes.
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char senderchoice[50];  //string to store user's choice.
     int flag = 0; //flag to check if a matching message exists in the buffer.
 
@@ -164,7 +167,8 @@ void singly_sendAllSenderMessages() {
             }
 
             if (currentnode) {
-                previousnode = currentnode;   //Set the new previous node to the current node, only if it exists.
+                //Set the new previous node to the current node, only if it exists.
+                previousnode = currentnode;
             }
 
         }
@@ -182,7 +186,8 @@ void singly_sendAllSenderMessages() {
 /**********************************************************************************/
 void singly_sendAllReceiverMessages() {
 
-    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;  //pointers to track nodes.
+    //pointers to track nodes.
+    struct singly_Packet *currentnode = NULL, *previousnode = NULL, *nextnode = NULL;
     char receiverchoice[50];  //string to store user's choice.
     int flag = 0;  //flag to check if a matching message exists in the buffer.
 
@@ -215,7 +220,8 @@ void singly_sendAllReceiverMessages() {
             }
 
             if (currentnode) {
-                previousnode = currentnode;   //Set the new previous node to the current node, only if it exists.
+                //Set the new previous node to the current node, only if it exists.
+                previousnode = currentnode;
             }
 
         }
