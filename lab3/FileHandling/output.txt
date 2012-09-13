@@ -1,6 +1,7 @@
 Common Words:
-->Whats
-->up
+->Where
 ->you
+->is
+->it
 
-Similarity of the 2 files = 0.272727
+Similarity of the 2 files (S) = 0.250000
