@@ -1,0 +1,7 @@
+10
+5
+item1 3 80
+item2 1 50
+item3 4 25
+item4 3 100
+item5 2 67

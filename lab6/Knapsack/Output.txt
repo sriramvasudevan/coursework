@@ -1,0 +1,3 @@
+1200 item2 item3 item6 : 1200 item2 item3 item6
+297 item1 item2 item4 item5 : 297 item1 item2 item4 item5
+1150 item1 item5 : 950 item1 item2 item6
