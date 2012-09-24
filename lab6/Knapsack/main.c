@@ -32,16 +32,16 @@ void mergeSort(item items[MAXITEMS], int begin, int end) {
     int middle = (begin + end) / 2;
     int mergedArrayLength = 0;
     float ratioFirstItem, ratioSecondItem;
-    
+
     if (begin == end) {
         return;
     }
-    
+
     if (end == begin + 1) {
-        ratioFirstItem = (float)items[begin].value/(float)items[begin].weight;
-        ratioSecondItem = (float)items[end].value/(float)items[end].weight;
-        
-        if(ratioFirstItem <= ratioSecondItem) {
+        ratioFirstItem = (float) items[begin].value / (float) items[begin].weight;
+        ratioSecondItem = (float) items[end].value / (float) items[end].weight;
+
+        if (ratioFirstItem <= ratioSecondItem) {
             item *temporary = (item*) malloc(sizeof (item));
             *temporary = items[begin];
             items[begin] = items[end];
@@ -49,16 +49,16 @@ void mergeSort(item items[MAXITEMS], int begin, int end) {
             free(temporary);
         }
     }
-    
+
     mergeSort(items, begin, middle);
     mergeSort(items, middle + 1, end);
 
     int i = begin, j = middle + 1;
-    
+
     while (i <= middle && j <= end) {
-        ratioFirstItem = (float)items[i].value/(float)items[i].weight;
-        ratioSecondItem = (float)items[j].value/(float)items[j].weight;
-        
+        ratioFirstItem = (float) items[i].value / (float) items[i].weight;
+        ratioSecondItem = (float) items[j].value / (float) items[j].weight;
+
         if (ratioFirstItem >= ratioSecondItem) {
             mergedArray[mergedArrayLength] = items[i];
             i++;
@@ -82,10 +82,10 @@ void mergeSort(item items[MAXITEMS], int begin, int end) {
             mergedArrayLength++;
         }
     }
-    
-    j=0;
-    for(i=begin; i<=end; i++,j++) {
-        items[i]=mergedArray[j];
+
+    j = 0;
+    for (i = begin; i <= end; i++, j++) {
+        items[i] = mergedArray[j];
     }
 
 }
@@ -98,8 +98,7 @@ void greedyAlgorithm(int noOfItems, int maximumWeight, item items[MAXITEMS], int
             optimalList[i] = 1;
             maximumWeight -= items[i].weight;
             *maximumValue += items[i].value;
-        }
-        else {
+        } else {
             optimalList[i] = 0;
         }
     }
@@ -114,7 +113,7 @@ void greedyAlgorithm(int noOfItems, int maximumWeight, item items[MAXITEMS], int
  *
  ******************************************************************************/
 void enumItemSubset(int position, int* binaryString, int noOfItems, item items[MAXITEMS],
-    int maximumWeight, int *maximumValue, int* optimalList) {
+        int maximumWeight, int *maximumValue, int* optimalList) {
     int i = 0, weight = 0, value = 0;
 
     //if n-bit string is generated.
@@ -222,7 +221,7 @@ int main(int argc, char** argv) {
         char nameOfFile[200];
         char fileNumber[5];
         noOfFiles = atoi(argv[1]);
-        for(i=1; i<=noOfFiles; i++) {
+        for (i = 1; i <= noOfFiles; i++) {
             strcpy(nameOfFile, "");
             strcat(nameOfFile, argv[2]);
             strcat(nameOfFile, "_");
@@ -230,6 +229,35 @@ int main(int argc, char** argv) {
             strcat(nameOfFile, fileNumber);
             strcat(nameOfFile, ".txt");
             readFromFile(nameOfFile, &maximumWeight, &noOfItems, items);
+
+            maximumValue = 0;
+            //call the recursive function to enumerate all possibilities.
+            enumItemSubset(0, binaryString, noOfItems, items, maximumWeight, &maximumValue, optimalList);
+
+            //Print the output.
+            printf("%d", maximumValue);
+            int I = 0;
+            for (I = 0; I < noOfItems; I++) {
+                if (optimalList[I]) {
+                    printf(" %s", items[I].name);
+                }
+            }
+
+            printf(" : ");
+
+            maximumValue = 0;
+            mergeSort(items, 0, noOfItems - 1);
+            greedyAlgorithm(noOfItems, maximumWeight, mergedArray, &maximumValue, optimalList);
+
+            printf("%d", maximumValue);
+            for (I = 0; I < noOfItems; I++) {
+                if (optimalList[I]) {
+                    printf(" %s", mergedArray[I].name);
+                }
+            }
+
+            printf("\n");
+
         }
     }//no file specified.
     else {
@@ -261,33 +289,6 @@ int main(int argc, char** argv) {
         printf("\n");
 
     }
-    
-            maximumValue = 0;
-            //call the recursive function to enumerate all possibilities.
-            enumItemSubset(0, binaryString, noOfItems, items, maximumWeight, &maximumValue, optimalList);
 
-            //Print the output.
-            printf("%d", maximumValue);
-            for (i = 0; i < noOfItems; i++) {
-                if (optimalList[i]) {
-                    printf(" %s", items[i].name);
-                }
-            }
-
-            printf(" : ");
-
-            maximumValue = 0;
-            mergeSort(items, 0, noOfItems - 1);
-            greedyAlgorithm(noOfItems, maximumWeight, mergedArray, &maximumValue, optimalList);
-
-            printf("%d", maximumValue);
-            for (i = 0; i < noOfItems; i++) {
-                if (optimalList[i]) {
-                    printf(" %s", mergedArray[i].name);
-                }
-            }
-
-            printf("\n");
-            
     return (EXIT_SUCCESS);
 }
