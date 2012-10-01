@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //constants.
 #define MAX 150
@@ -28,19 +29,27 @@ typedef struct it {
 } item;
 item mergedArray[MAXITEMS];
 
+/*******************************************************************************
+ *
+ * The merge sort algorithm.
+ * 
+ ******************************************************************************/
 void mergeSort(item items[MAXITEMS], int begin, int end) {
     int middle = (begin + end) / 2;
     int mergedArrayLength = 0;
     float ratioFirstItem, ratioSecondItem;
 
+    //terminating condition - only one element.
     if (begin == end) {
         return;
     }
 
+    //terminating condition - array of 2 elements.
     if (end == begin + 1) {
         ratioFirstItem = (float) items[begin].value / (float) items[begin].weight;
         ratioSecondItem = (float) items[end].value / (float) items[end].weight;
 
+        //swap the elements if the ratio of the first element is lesser than the ratio of the second.
         if (ratioFirstItem <= ratioSecondItem) {
             item *temporary = (item*) malloc(sizeof (item));
             *temporary = items[begin];
@@ -50,25 +59,33 @@ void mergeSort(item items[MAXITEMS], int begin, int end) {
         }
     }
 
+    //sort the 2 split arrays.
     mergeSort(items, begin, middle);
     mergeSort(items, middle + 1, end);
 
     int i = begin, j = middle + 1;
 
+    //merge the 2 sorted arrays into a new array.
     while (i <= middle && j <= end) {
         ratioFirstItem = (float) items[i].value / (float) items[i].weight;
         ratioSecondItem = (float) items[j].value / (float) items[j].weight;
 
+        //copy the element of the first array into the new array.
         if (ratioFirstItem >= ratioSecondItem) {
             mergedArray[mergedArrayLength] = items[i];
             i++;
             mergedArrayLength++;
-        } else {
+        } 
+        
+        //copy the element of the second array into the new array.
+        else {
             mergedArray[mergedArrayLength] = items[j];
             j++;
             mergedArrayLength++;
         }
     }
+    
+    //copy the remaining elements into the new array.
     if (i <= middle) {
         while (i <= middle) {
             mergedArray[mergedArrayLength] = items[i];
@@ -84,18 +101,25 @@ void mergeSort(item items[MAXITEMS], int begin, int end) {
     }
 
     j = 0;
+    
+    //replace the 2 arrays with the fully sorted array.
     for (i = begin; i <= end; i++, j++) {
         items[i] = mergedArray[j];
     }
 
 }
 
+/*******************************************************************************
+ *
+ * The greedy algorithm function.
+ * 
+ ******************************************************************************/
 void greedyAlgorithm(int noOfItems, int maximumWeight, item items[MAXITEMS], int *maximumValue, int* optimalList) {
     int i = 0;
     *maximumValue = 0;
     for (i = 0; i < noOfItems; i++) {
         if (items[i].weight <= maximumWeight) {
-            optimalList[i] = 1;
+            optimalList[i] = 1;  //save the element by means of a bit string.
             maximumWeight -= items[i].weight;
             *maximumValue += items[i].value;
         } else {
@@ -245,10 +269,12 @@ int main(int argc, char** argv) {
 
             printf(" : ");
 
+            //Run the greedy algorithm to generate the new bit string.
             maximumValue = 0;
             mergeSort(items, 0, noOfItems - 1);
             greedyAlgorithm(noOfItems, maximumWeight, mergedArray, &maximumValue, optimalList);
 
+            //print the output.
             printf("%d", maximumValue);
             for (I = 0; I < noOfItems; I++) {
                 if (optimalList[I]) {
@@ -259,7 +285,9 @@ int main(int argc, char** argv) {
             printf("\n");
 
         }
-    }//no file specified.
+    }
+    
+    //no file specified.
     else {
         readFromConsole(&maximumWeight, &noOfItems, items);
 
