@@ -16,19 +16,25 @@
  * 
  ******************************************************************************/
 
-//Structure definition of the item
+//Structure definition of a point.
 
 typedef struct pt {
     int xcoordinate;
     int ycoordinate;
 } point;
 
+//global variable declarations.
 int count = 0;
 point leftMost;
 
+/*******************************************************************************
+ *
+ * Function to calculate the angle made by the slope of 2 points.
+ * 
+ ******************************************************************************/
 float angle(point a, point b, int convexHullInc) {
     float angle = atan((a.ycoordinate - b.ycoordinate) / (float) (a.xcoordinate - b.xcoordinate));
-    // tan value is for angle formed by vector from b to a.
+    // The following if - else conditions assign the right sign for the 90 degree angle.
     if (convexHullInc) {
         if (a.xcoordinate == b.xcoordinate && a.ycoordinate > b.ycoordinate) {
             if (angle < 0) {
@@ -53,77 +59,27 @@ float angle(point a, point b, int convexHullInc) {
     return angle;
 }
 
+/*******************************************************************************
+ *
+ * Function to calculate the distance between 2 points.
+ * 
+ ******************************************************************************/
 float distance(point a, point b) {
     float distance_sq = (float) pow((b.xcoordinate - a.xcoordinate), 2) + (float) pow((b.ycoordinate - a.ycoordinate), 2);
     return (sqrt(distance_sq));
 }
 
-void distanceSort(point collinearArray[100], int k, point seed) {
-    if (k == 1) {
-        return;
-    }
-
-    if (k == 2) {
-        if (distance(collinearArray[0], seed) > distance(collinearArray[1], seed)) {
-            point *temporary = (point*) malloc(sizeof (point));
-            *temporary = collinearArray[0];
-            collinearArray[0] = collinearArray[1];
-            collinearArray[1] = *temporary;
-            free(temporary);
-        }
-        return;
-    }
-
-    distanceSort(collinearArray, k / 2, seed);
-    distanceSort(collinearArray + k / 2, k, seed);
-
-    int i = 0, j = k / 2;
-    int mergedArrayLength = 0;
-    point mergedArray[100];
-
-    while (i < k / 2 && j < k) {
-        if (distance(collinearArray[i], seed) < distance(collinearArray[j], seed)) {
-            mergedArray[mergedArrayLength] = collinearArray[i];
-            i++;
-            mergedArrayLength++;
-        } else {
-            mergedArray[mergedArrayLength] = collinearArray[j];
-            j++;
-            mergedArrayLength++;
-        }
-    }
-    if (i < k / 2) {
-        while (i < k / 2) {
-            mergedArray[mergedArrayLength] = collinearArray[i];
-            i++;
-            mergedArrayLength++;
-        }
-    } else {
-        while (j < k) {
-            mergedArray[mergedArrayLength] = collinearArray[j];
-            j++;
-            mergedArrayLength++;
-        }
-    }
-
-    j = 0;
-    for (i = 0; i < k; i++, j++) {
-        collinearArray[i] = mergedArray[j];
-    }
-}
-
-void addToHull(point collinearArray[100], int k, point hull[100], int *count) {
-    int i = 0;
-    for (; i < k; i++, (*count)++) {
-        hull[*count] = collinearArray[i];
-    }
-}
-
+/*******************************************************************************
+ *
+ * Recursive function for the lower portion of the convex hull.
+ * 
+ ******************************************************************************/
 void convexHullDecreasing(point points[100], int noOfPoints, point seed, point hull[100]) {
     float s = 0, maxangle;
     point nextpoint;
     int i = 0, flag = 0, flag2 = 0;
 
+    //Initialise maxangle and nextpoint.
     for (i = 0; i < noOfPoints; i++) {
         if ((!isnan(angle(points[i], seed, 0))) && (points[i].xcoordinate < seed.xcoordinate)) {
             maxangle = angle(points[i], seed, 0);
@@ -184,6 +140,11 @@ void convexHullDecreasing(point points[100], int noOfPoints, point seed, point h
 
 }
 
+/*******************************************************************************
+ *
+ * Recursive function for the upper portion of the convex hull.
+ * 
+ ******************************************************************************/
 void convexHullIncreasing(point points[100], int noOfPoints, point seed, point hull[100]) {
     float s = 0, maxangle;
     point nextpoint;
@@ -241,6 +202,11 @@ void convexHullIncreasing(point points[100], int noOfPoints, point seed, point h
     }
 }
 
+/*******************************************************************************
+ *
+ * Function to find the leftmost point.
+ * 
+ ******************************************************************************/
 point leftMostPoint(point points[100], int noOfPoints) {
     int i = 0;
     point leftMost = points[0];
@@ -256,6 +222,11 @@ point leftMostPoint(point points[100], int noOfPoints) {
     return leftMost;
 }
 
+/*******************************************************************************
+ *
+ * Function to print the result in the specified format.
+ * 
+ ******************************************************************************/
 void printResult(point hull[100], int count) {
     int i;
     for (i = 0; i < count - 1; i++) {
@@ -300,9 +271,12 @@ void readFromFile(char* file, point points[100], int *noOfPoints) {
                 break;
             }
         }
+        
         hull[0] = leftMostPoint(points, *noOfPoints);
         ++count;
+        
         convexHullIncreasing(points, *noOfPoints, hull[0], hull);
+        
         printResult(hull, count);
         *noOfPoints = 0;
         count = 0;
@@ -311,6 +285,11 @@ void readFromFile(char* file, point points[100], int *noOfPoints) {
     fclose(inputfile);
 }
 
+/*******************************************************************************
+ *
+ * The Main Function.
+ * 
+ ******************************************************************************/
 int main(int argc, char** argv) {
     if (argc <= 1) {
         printf("\n Please provide a filename as a command line argument.\n");
