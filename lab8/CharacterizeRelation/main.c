@@ -41,6 +41,7 @@ void equivalenceClass(int **matrix, int matrixOrder) {
 
     //Iterate row-wise through the adjacency matrix.
     for (i = 0; i < matrixOrder; i++) {
+        
         //check if the element exists already in a class.
         for (j = 0; j < equivalenceClassNumber; j++) {
             for (k = 0; k < n; k++) {
@@ -55,6 +56,8 @@ void equivalenceClass(int **matrix, int matrixOrder) {
         if (j < equivalenceClassNumber) {
             continue;
         }
+        
+        //if the element doesn't exist in an equivalence class already, add all elements associated to a new class.
         for (j = 0; j < matrixOrder; j++) {
             if (matrix[i][j]) {
                 equivalenceClass[equivalenceClassNumber][m] = j + 1;
@@ -77,6 +80,7 @@ void equivalenceClass(int **matrix, int matrixOrder) {
         printf(" }\n");
     }
     
+    //free up the initialized memory.
     free(equivalenceClass);
 }
 
@@ -87,11 +91,13 @@ void equivalenceClass(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int reflexive(int **matrix, int matrixOrder) {
     int i;
+    
     for (i = 0; i < matrixOrder; i++) {
         if (matrix[i][i] == 0) {
             break;
         }
     }
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -105,6 +111,7 @@ int reflexive(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int symmetric(int **matrix, int matrixOrder) {
     int i, j;
+    
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
             if (matrix[i][j] != matrix[j][i]) {
@@ -115,6 +122,7 @@ int symmetric(int **matrix, int matrixOrder) {
             break;
         }
     }
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -128,6 +136,7 @@ int symmetric(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int transitive(int **matrix, int matrixOrder) {
     int i, j, k;
+    
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
             for (k = 0; k < matrixOrder; k++) {
@@ -143,6 +152,7 @@ int transitive(int **matrix, int matrixOrder) {
             break;
         }
     }
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -243,23 +253,27 @@ int main(int argc, char** argv) {
         printf("\n");
     }
 
+    //equivalence relation
     printf("\nThe relation is ");
     if (!equivalence(matrix, matrixOrder)) {
         printf("not ");
     }
     printf("an equivalence relation.");
+    //print equivalence class if equivalence relation
     if (equivalence(matrix, matrixOrder)) {
         equivalenceClass(matrix, matrixOrder);
     }
 
+    //partial order
     printf("\n\nThe relation is ");
     if (!partialOrder(matrix, matrixOrder)) {
         printf("not ");
     }
     printf("a partial order.");
 
+    //transitive closure
     warshall(matrix, matrixOrder);
-    //Print the transitive closure of the matrix.
+    ////Print the transitive closure of the matrix.
     printf("\n\nThe transitive closure of the entered matrix is:\n");
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
@@ -268,6 +282,7 @@ int main(int argc, char** argv) {
         printf("\n");
     }
 
+    //free up the initialized memory.
     free(matrix);
 
     return (EXIT_SUCCESS);
