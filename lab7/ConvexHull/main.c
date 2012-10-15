@@ -306,7 +306,6 @@ void readFromFile(char* file, point points[100], int *noOfPoints) {
         printResult(hull, count);
         *noOfPoints = 0;
         count = 0;
-
     }
 
     fclose(inputfile);
