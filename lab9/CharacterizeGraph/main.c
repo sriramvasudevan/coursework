@@ -14,6 +14,7 @@
  * 
  ******************************************************************************/
 
+
 /*******************************************************************************
  * 
  * Function to calculate equivalence class. The adjacency matrix supplied must
@@ -40,7 +41,7 @@ void equivalenceClass(int **matrix, int matrixOrder) {
 
     //Iterate row-wise through the adjacency matrix.
     for (i = 0; i < matrixOrder; i++) {
-
+        
         //check if the element exists already in a class.
         for (j = 0; j < equivalenceClassNumber; j++) {
             for (k = 0; k < n; k++) {
@@ -55,7 +56,7 @@ void equivalenceClass(int **matrix, int matrixOrder) {
         if (j < equivalenceClassNumber) {
             continue;
         }
-
+        
         //if the element doesn't exist in an equivalence class already, add all elements associated to a new class.
         for (j = 0; j < matrixOrder; j++) {
             if (matrix[i][j]) {
@@ -78,7 +79,7 @@ void equivalenceClass(int **matrix, int matrixOrder) {
         }
         printf(" }\n");
     }
-
+    
     //free up the initialized memory.
     free(equivalenceClass);
 }
@@ -90,13 +91,13 @@ void equivalenceClass(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int reflexive(int **matrix, int matrixOrder) {
     int i;
-
+    
     for (i = 0; i < matrixOrder; i++) {
         if (matrix[i][i] == 0) {
             break;
         }
     }
-
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -110,7 +111,7 @@ int reflexive(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int symmetric(int **matrix, int matrixOrder) {
     int i, j;
-
+    
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
             if (matrix[i][j] != matrix[j][i]) {
@@ -121,32 +122,7 @@ int symmetric(int **matrix, int matrixOrder) {
             break;
         }
     }
-
-    if (i < matrixOrder) {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * 
- * Function to check asymmetry of a relation.
- * 
- ******************************************************************************/
-int asymmetric(int **matrix, int matrixOrder) {
-    int i, j;
-
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            if ((matrix[i][j] = 1) && (matrix[j][i] == 1) && (i != j)) {
-                break;
-            }
-        }
-        if (j < matrixOrder) {
-            break;
-        }
-    }
-
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -160,7 +136,7 @@ int asymmetric(int **matrix, int matrixOrder) {
  ******************************************************************************/
 int transitive(int **matrix, int matrixOrder) {
     int i, j, k;
-
+    
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
             for (k = 0; k < matrixOrder; k++) {
@@ -176,7 +152,7 @@ int transitive(int **matrix, int matrixOrder) {
             break;
         }
     }
-
+    
     if (i < matrixOrder) {
         return 0;
     }
@@ -201,8 +177,7 @@ int equivalence(int **matrix, int matrixOrder) {
  * 
  ******************************************************************************/
 int partialOrder(int **matrix, int matrixOrder) {
-
-    if (!(reflexive(matrix, matrixOrder) * transitive(matrix, matrixOrder) * asymmetric(matrix, matrixOrder))) {
+    if ((!(reflexive(matrix, matrixOrder) * transitive(matrix, matrixOrder))) || (symmetric(matrix, matrixOrder))) {
         return 0;
     }
     return 1;
@@ -223,7 +198,6 @@ void warshall(int **matrix, int matrixOrder) {
                     if (matrix[i][j] == 1 || matrix[k][j] == 1) {
                         matrix[i][j] = 1;
                     } else {
-
                         matrix[i][j] = 0;
                     }
                 }
@@ -313,4 +287,3 @@ int main(int argc, char** argv) {
 
     return (EXIT_SUCCESS);
 }
-
