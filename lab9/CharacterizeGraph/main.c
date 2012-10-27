@@ -10,200 +10,169 @@
 
 /*******************************************************************************
  * 
- * Characterizing a Relation.
+ * Characterizing a Graph.
  * 
  ******************************************************************************/
-
 
 /*******************************************************************************
  * 
- * Function to calculate equivalence class. The adjacency matrix supplied must
- * be equivalent.
+ * Function to ensure that a graph is undirected.
  * 
  ******************************************************************************/
-void equivalenceClass(int **matrix, int matrixOrder) {
-    int i = 0, j = 0, k = 0, m = 0, equivalenceClassNumber = 0;
-    int** equivalenceClass;
-    int n = matrixOrder;
-
-    //Initialize the values of the pointers to NULL.
-    equivalenceClass = (int**) malloc(n * sizeof (int *));
-    for (i = 0; i < n; i++) {
-        equivalenceClass[i] = (int*) malloc(n * sizeof (int));
-    }
-
-    //Initialize the matrix elements to zero.
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < n; j++) {
-            equivalenceClass[i][j] = 0;
-        }
-    }
-
-    //Iterate row-wise through the adjacency matrix.
-    for (i = 0; i < matrixOrder; i++) {
-        
-        //check if the element exists already in a class.
-        for (j = 0; j < equivalenceClassNumber; j++) {
-            for (k = 0; k < n; k++) {
-                if (equivalenceClass[j][k] == i + 1) {
-                    break;
-                }
-            }
-            if (k < n) {
-                break;
-            }
-        }
-        if (j < equivalenceClassNumber) {
-            continue;
-        }
-        
-        //if the element doesn't exist in an equivalence class already, add all elements associated to a new class.
-        for (j = 0; j < matrixOrder; j++) {
-            if (matrix[i][j]) {
-                equivalenceClass[equivalenceClassNumber][m] = j + 1;
-                m++;
-            }
-        }
-        equivalenceClassNumber++;
-    }
-
-    //print the result.
-    printf("\nThe equivalence classes are:\n");
-    for (i = 0; i < equivalenceClassNumber; i++) {
-        printf("\n%d. {", i + 1);
-        for (j = 0; j < n; j++) {
-            //if non-zero, then an element has been added.
-            if (equivalenceClass[i][j]) {
-                printf(" %d,", equivalenceClass[i][j]);
-            }
-        }
-        printf(" }\n");
-    }
-    
-    //free up the initialized memory.
-    free(equivalenceClass);
-}
-
-/*******************************************************************************
- * 
- * Function to check reflexivity of a relation.
- * 
- ******************************************************************************/
-int reflexive(int **matrix, int matrixOrder) {
-    int i;
-    
-    for (i = 0; i < matrixOrder; i++) {
-        if (matrix[i][i] == 0) {
-            break;
-        }
-    }
-    
-    if (i < matrixOrder) {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * 
- * Function to check symmetry of a relation.
- * 
- ******************************************************************************/
-int symmetric(int **matrix, int matrixOrder) {
+void symmetric(int **graph, int number_of_vertices) {
     int i, j;
-    
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            if (matrix[i][j] != matrix[j][i]) {
-                break;
+
+    for (i = 0; i < number_of_vertices; i++) {
+        for (j = 0; j < number_of_vertices; j++) {
+            if (graph[i][j] != graph[j][i]) {
+                graph[i][j] = 1;
+                graph[j][i] = 1;
             }
         }
-        if (j < matrixOrder) {
+        if (j < number_of_vertices) {
             break;
         }
     }
-    
-    if (i < matrixOrder) {
-        return 0;
-    }
-    return 1;
 }
 
 /*******************************************************************************
  * 
- * Function to check transitivity of a relation.
+ * Function that implements Depth First Search to assign parities.
  * 
  ******************************************************************************/
-int transitive(int **matrix, int matrixOrder) {
+void depthFirstSearch(int* vertex_traversed, int vertex_number, int node_parity, int* cycles, int **graph, int number_of_vertices) {
     int i, j, k;
-    
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            for (k = 0; k < matrixOrder; k++) {
-                if (matrix[i][j] == 1 && matrix[j][k] == 1 && matrix[i][k] == 0) {
-                    break;
-                }
-            }
-            if (k < matrixOrder) {
-                break;
-            }
-        }
-        if (j < matrixOrder) {
-            break;
-        }
-    }
-    
-    if (i < matrixOrder) {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * 
- * Function to check for an equivalence relation.
- * 
- ******************************************************************************/
-int equivalence(int **matrix, int matrixOrder) {
-    if (!(reflexive(matrix, matrixOrder) * symmetric(matrix, matrixOrder) * transitive(matrix, matrixOrder))) {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * 
- * Function to check if the relation is a partial order.
- * 
- ******************************************************************************/
-int partialOrder(int **matrix, int matrixOrder) {
-    if ((!(reflexive(matrix, matrixOrder) * transitive(matrix, matrixOrder))) || (symmetric(matrix, matrixOrder))) {
-        return 0;
-    }
-    return 1;
-}
-
-/*******************************************************************************
- * 
- * Warshall's Algorithm, to compute the transitive closure of a relation.
- * 
- ******************************************************************************/
-void warshall(int **matrix, int matrixOrder) {
-    int i = 0, j = 0, k = 0;
-
-    for (k = 0; k < matrixOrder; k++) {
-        for (i = 0; i < matrixOrder; i++) {
-            for (j = 0; j < matrixOrder; j++) {
-                if (matrix[i][k] == 1) {
-                    if (matrix[i][j] == 1 || matrix[k][j] == 1) {
-                        matrix[i][j] = 1;
-                    } else {
-                        matrix[i][j] = 0;
-                    }
+    vertex_traversed[vertex_number] = node_parity;   //set the vertex as traversed, by setting its parity.
+    for (i = 0; i < number_of_vertices; i++) {
+        if ((graph[vertex_number][i]) && (i != vertex_number)) {       //if an adjacent vertex
+            if (!vertex_traversed[i]) {
+                //run DFS with the untraversed adjacent vertex as the root.
+                depthFirstSearch(vertex_traversed, i, -1 * node_parity, cycles, graph, number_of_vertices);
+            } else {
+                if (vertex_traversed[vertex_number] == vertex_traversed[i]) {  //if the adjacent vertices have the same parity, then an odd cycle is formed.
+                    cycles[1]++;
+                } else {
+                    cycles[0]++; //else an odd cycle is formed.
                 }
             }
         }
     }
+}
+
+/*******************************************************************************
+ * 
+ * Function that checks the connectivity of the graph.
+ * 
+ * Output:
+ * Connected: 1
+ * Else: 0
+ *  
+ ******************************************************************************/
+int connectedGraph(int* vertex_traversed, int **graph, int number_of_vertices) {
+    int i;
+    for (i = 0; i < number_of_vertices; i++) {
+        if (!vertex_traversed[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/*******************************************************************************
+ * 
+ * Function that checks for cycles in a graph.
+ * 
+ * Output:
+ * Acyclic: 0
+ * If atleast one odd Cycle exists: -1
+ * Else: 1
+ * 
+ ******************************************************************************/
+int cyclicGraph(int* cycles) {
+    if (!(cycles[0] + cycles[1])) {
+        return 0;
+    }
+    if (cycles[1]) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+/*******************************************************************************
+ * 
+ * Function that analyzes the graph to check for connectivity and cycles.
+ * 
+ ******************************************************************************/
+void analyzeGraph(int* vertex_traversed, int **graph, int number_of_vertices, int* is_connected, int* is_cyclic) {
+    int* cycles;
+    cycles = (int*) malloc(2 * sizeof (int));
+    
+    //2nd argument of depthFirstSearch() must be zero, and the 3rd can be any non-zero integer.
+    depthFirstSearch(vertex_traversed, 0, 1, cycles, graph, number_of_vertices);
+    *is_connected = connectedGraph(vertex_traversed, graph, number_of_vertices);
+    *is_cyclic = cyclicGraph(cycles);
+    
+    free(cycles);
+}
+
+/*******************************************************************************
+ * 
+ * Function to free up initialized memory.
+ * 
+ ******************************************************************************/
+void freeMemory(int **graph, int number_of_vertices, int* vertex_traversed) {
+    int i;
+    for (i = 0; i < number_of_vertices; i++) {
+        free(graph[i]);
+    }
+    free(graph);
+    free(vertex_traversed);
+}
+
+/*******************************************************************************
+ * 
+ * Print the graph that is passed as an argument.
+ * 
+ ******************************************************************************/
+void printMatrix(int **graph, int number_of_vertices) {
+    int i, j;
+    printf("The read in adjacency matrix is:\n");
+    for (i = 0; i < number_of_vertices; i++) {
+        for (j = 0; j < number_of_vertices; j++) {
+            printf("%d ", graph[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+/*******************************************************************************
+ * 
+ * Print the graph characteristics.
+ * 
+ ******************************************************************************/
+void printResult(int is_connected, int is_cyclic) {
+    printf("\nThe graph is:\n");
+    if (is_connected) {
+        printf("1. connected.\n");
+    } else {
+        printf("1. disconnected.\n");
+    }
+    if (is_cyclic) {
+        printf("2. cyclic.\n");
+    } else {
+        printf("2. acyclic.\n");
+    }
+    if ((is_connected) && (!is_cyclic)) {
+        printf("3. a tree.\n");
+    } else {
+        printf("3. not a tree\n");
+    }
+    if (is_cyclic == -1) {
+        printf("4. not bipartite.\n");
+    } else {
+        printf("4. bipartite.\n");
+    }    
 }
 
 /*******************************************************************************
@@ -218,8 +187,10 @@ int main(int argc, char** argv) {
     }
 
     FILE *inputfile;
-    int matrixOrder = 0, i = 0, j = 0;
-    int** matrix;
+    int number_of_vertices = 0, is_connected = 0, is_cyclic = 0;
+    int i = 0, j = 0;
+    int** graph;
+    int* vertex_traversed;
 
     inputfile = fopen(argv[1], "r");
 
@@ -228,62 +199,41 @@ int main(int argc, char** argv) {
         exit(-1);
     }
 
-    //Read the number of elements.
-    fscanf(inputfile, "%d", &matrixOrder);
+    //Read in the number of vertices.
+    fscanf(inputfile, "%d", &number_of_vertices);
 
     //Initialize the values of the pointers to NULL.
-    matrix = (int**) malloc(matrixOrder * sizeof (int *));
-    for (i = 0; i < matrixOrder; i++) {
-        matrix[i] = (int*) malloc(matrixOrder * sizeof (int));
+    graph = (int**) malloc(number_of_vertices * sizeof (int *));
+    for (i = 0; i < number_of_vertices; i++) {
+        graph[i] = (int*) malloc(number_of_vertices * sizeof (int));
     }
-
-    //Read in the matrix from the input file.
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            fscanf(inputfile, "%d", &matrix[i][j]);
+    vertex_traversed = (int*) malloc(number_of_vertices * sizeof (int));
+    
+    //Read in the graph from the input file.
+    for (i = 0; i < number_of_vertices; i++) {
+        for (j = 0; j < number_of_vertices; j++) {
+            fscanf(inputfile, "%d", &(graph[i][j]));
         }
+        vertex_traversed[i] = 0;
     }
 
-    //Print the read in matrix.
-    printf("The read in adjacency matrix is:\n");
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            printf("%d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
+    //Close the opened file.
+    fclose(inputfile);
 
-    //equivalence relation
-    printf("\nThe relation is ");
-    if (!equivalence(matrix, matrixOrder)) {
-        printf("not ");
-    }
-    printf("an equivalence relation.");
-    //print equivalence class if equivalence relation
-    if (equivalence(matrix, matrixOrder)) {
-        equivalenceClass(matrix, matrixOrder);
-    }
+    //Ensure the graph is undirected.
+    symmetric(graph, number_of_vertices);
 
-    //partial order
-    printf("\n\nThe relation is ");
-    if (!partialOrder(matrix, matrixOrder)) {
-        printf("not ");
-    }
-    printf("a partial order.");
+    //Print the read in graph.
+    printMatrix(graph, number_of_vertices);
+    
+    //Analyze the graph to check for connectivity and cycles.
+    analyzeGraph(vertex_traversed, graph, number_of_vertices, &is_connected, &is_cyclic);
 
-    //transitive closure
-    warshall(matrix, matrixOrder);
-    ////Print the transitive closure of the matrix.
-    printf("\n\nThe transitive closure of the entered matrix is:\n");
-    for (i = 0; i < matrixOrder; i++) {
-        for (j = 0; j < matrixOrder; j++) {
-            printf("%d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
+    //Print the results.
+    printResult(is_connected, is_cyclic);
 
-    //free up the initialized memory.
-    free(matrix);
+    //Free up the initialized memory.
+    freeMemory(graph, number_of_vertices, vertex_traversed);
 
     return (EXIT_SUCCESS);
 }
