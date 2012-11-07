@@ -138,7 +138,7 @@ int asymmetric(int **matrix, int matrixOrder) {
 
     for (i = 0; i < matrixOrder; i++) {
         for (j = 0; j < matrixOrder; j++) {
-            if ((matrix[i][j] = 1) && (matrix[j][i] == 1) && (i != j)) {
+            if ((matrix[i][j] == 1) && (matrix[j][i] == 1) && (i != j)) {
                 break;
             }
         }

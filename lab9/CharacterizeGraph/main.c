@@ -40,16 +40,16 @@ void symmetric(int **graph, int number_of_vertices) {
  * Function that implements Depth First Search to assign parities.
  * 
  ******************************************************************************/
-void depthFirstSearch(int* vertex_traversed, int vertex_number, int node_parity, int* cycles, int **graph, int number_of_vertices) {
+void depthFirstSearch(int* vertex_traversed, int previous_vertex, int vertex_number, int node_parity, int* cycles, int **graph, int number_of_vertices) {
     int i, j, k;
-    vertex_traversed[vertex_number] = node_parity;   //set the vertex as traversed, by setting its parity.
+    vertex_traversed[vertex_number] = node_parity; //set the vertex as traversed, by setting its parity.
     for (i = 0; i < number_of_vertices; i++) {
-        if ((graph[vertex_number][i]) && (i != vertex_number)) {       //if an adjacent vertex
+        if ((graph[vertex_number][i]) && (i != vertex_number) && (i != previous_vertex)) { //if an adjacent vertex
             if (!vertex_traversed[i]) {
                 //run DFS with the untraversed adjacent vertex as the root.
-                depthFirstSearch(vertex_traversed, i, -1 * node_parity, cycles, graph, number_of_vertices);
+                depthFirstSearch(vertex_traversed, vertex_number, i, -1 * node_parity, cycles, graph, number_of_vertices);
             } else {
-                if (vertex_traversed[vertex_number] == vertex_traversed[i]) {  //if the adjacent vertices have the same parity, then an odd cycle is formed.
+                if (vertex_traversed[vertex_number] == vertex_traversed[i]) { //if the adjacent vertices have the same parity, then an odd cycle is formed.
                     cycles[1]++;
                 } else {
                     cycles[0]++; //else an odd cycle is formed.
@@ -105,14 +105,19 @@ int cyclicGraph(int* cycles) {
  * 
  ******************************************************************************/
 void analyzeGraph(int* vertex_traversed, int **graph, int number_of_vertices, int* is_connected, int* is_cyclic) {
+    int i;
     int* cycles;
     cycles = (int*) malloc(2 * sizeof (int));
-    
-    //2nd argument of depthFirstSearch() must be zero, and the 3rd can be any non-zero integer.
-    depthFirstSearch(vertex_traversed, 0, 1, cycles, graph, number_of_vertices);
+
+    //initialize the values to zero.
+    for (i = 0; i < 2; i++) {
+        cycles[i] = 0;
+    }
+    //2nd argument of depthFirstSearch() must be -1, 3rd zero, and the 4th can be any non-zero integer, within integer range.
+    depthFirstSearch(vertex_traversed, -1, 0, 1, cycles, graph, number_of_vertices);
     *is_connected = connectedGraph(vertex_traversed, graph, number_of_vertices);
     *is_cyclic = cyclicGraph(cycles);
-    
+
     free(cycles);
 }
 
@@ -172,7 +177,7 @@ void printResult(int is_connected, int is_cyclic) {
         printf("4. not bipartite.\n");
     } else {
         printf("4. bipartite.\n");
-    }    
+    }
 }
 
 /*******************************************************************************
@@ -208,7 +213,7 @@ int main(int argc, char** argv) {
         graph[i] = (int*) malloc(number_of_vertices * sizeof (int));
     }
     vertex_traversed = (int*) malloc(number_of_vertices * sizeof (int));
-    
+
     //Read in the graph from the input file.
     for (i = 0; i < number_of_vertices; i++) {
         for (j = 0; j < number_of_vertices; j++) {
@@ -225,7 +230,7 @@ int main(int argc, char** argv) {
 
     //Print the read in graph.
     printMatrix(graph, number_of_vertices);
-    
+
     //Analyze the graph to check for connectivity and cycles.
     analyzeGraph(vertex_traversed, graph, number_of_vertices, &is_connected, &is_cyclic);
 
