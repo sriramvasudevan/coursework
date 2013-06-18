@@ -4,3 +4,7 @@ dist/
 nbproject/
 *.out
 *.gz
+*.zip
+*.swp
+*.dep.inc
+*~
