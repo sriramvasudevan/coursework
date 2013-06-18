@@ -114,44 +114,81 @@ void DFS(node* vertices, int previous_vertex, int vertex_number, int node_parity
  * 
  ******************************************************************************/
 void DFSimproved(node* vertices, int **matrix, int matrixOrder) {
-    int i, j, k, partition1 = 0, partition0 = 0, edges = 0, newedges = 0;
-    DFS(vertices, -1, 0, 1, matrix, matrixOrder);
+    int i, j, k, partition1 = 0, partition0 = 0, edges = 0, newedges = 0, flag;
+    do {
+        flag = 0;
+        DFS(vertices, -1, 0, 1, matrix, matrixOrder);
 
-    for (i = 0; i < matrixOrder; i++) {
-        if (vertices[i].colour == 1) {
-            for (j = 0; j < matrixOrder; j++) {
-                if ((matrix[i][j]) && (i != j)) {
-                    if (vertices[j].colour == 1) {
-                        partition1++;
-                    } else if (vertices[j].colour == -1) {
-                        partition0++;
+        for (i = 0; i < matrixOrder; i++) {
+            if (vertices[i].colour == 1) {
+                for (j = 0; j < matrixOrder; j++) {
+                    if ((matrix[i][j]) && (i != j)) {
+                        if (vertices[j].colour == 1) {
+                            partition1++;
+                        } else if (vertices[j].colour == -1) {
+                            partition0++;
+                        }
                     }
                 }
-            }
-            if (partition1 > partition0) {
-                for (j = 0; j < matrixOrder; j++) {
-                    if ((matrix[i][j]) && (vertices[j].colour == 1) && (i != j)) {
-                        newedges = edges;
-                        for (k = 0; k < matrixOrder; k++) {
-                            if ((matrix[j][k]) && (j != k)) {
-                                if (vertices[k].colour == 1) {
-                                    newedges++;
-                                } else if (vertices[k].colour == -1) {
-                                    newedges--;
+                if (partition1 > partition0) {
+                    for (j = 0; j < matrixOrder; j++) {
+                        if ((matrix[i][j]) && (vertices[j].colour == 1) && (i != j)) {
+                            newedges = edges;
+                            for (k = 0; k < matrixOrder; k++) {
+                                if ((matrix[j][k]) && (j != k)) {
+                                    if (vertices[k].colour == 1) {
+                                        newedges++;
+                                    } else if (vertices[k].colour == -1) {
+                                        newedges--;
+                                    }
                                 }
                             }
-                        }
-                        if (newedges > edges) {
-                            vertices[j].colour = -1;
-                            edges = newedges;
+                            if (newedges > edges) {
+                                vertices[j].colour = -1;
+                                edges = newedges;
+                                flag = 1;
+                            }
                         }
                     }
                 }
+                partition1 = 0;
+                partition0 = 0;
+            } else if (vertices[i].colour == -1) {
+                for (j = 0; j < matrixOrder; j++) {
+                    if ((matrix[i][j]) && (i != j)) {
+                        if (vertices[j].colour == -1) {
+                            partition1++;
+                        } else if (vertices[j].colour == 1) {
+                            partition0++;
+                        }
+                    }
+                }
+                if (partition1 > partition0) {
+                    for (j = 0; j < matrixOrder; j++) {
+                        if ((matrix[i][j]) && (vertices[j].colour == -1) && (i != j)) {
+                            newedges = edges;
+                            for (k = 0; k < matrixOrder; k++) {
+                                if ((matrix[j][k]) && (j != k)) {
+                                    if (vertices[k].colour == -1) {
+                                        newedges++;
+                                    } else if (vertices[k].colour == 1) {
+                                        newedges--;
+                                    }
+                                }
+                            }
+                            if (newedges > edges) {
+                                vertices[j].colour = 1;
+                                edges = newedges;
+                                flag = 1;
+                            }
+                        }
+                    }
+                }
+                partition1 = 0;
+                partition0 = 0;
             }
-            partition1 = 0;
-            partition0 = 0;
         }
-    }
+    } while (flag);
 }
 
 /*******************************************************************************
@@ -161,25 +198,25 @@ void DFSimproved(node* vertices, int **matrix, int matrixOrder) {
  ******************************************************************************/
 void greedyPartition(node* vertices, int** matrix, int matrixOrder) {
     int i, j, partition1 = 0, partition2 = 0;
-    
+
     for (i = 0; i < matrixOrder; i++) {
-            for (j = 0; j < matrixOrder; j++) {
-                if ((matrix[i][j]) && (i != j)) {
-                    if (vertices[j].colour == 1) {
-                        partition1++;
-                    } else if (vertices[j].colour == -1) {
-                        partition2++;
-                    }
+        for (j = 0; j < matrixOrder; j++) {
+            if ((matrix[i][j]) && (i != j)) {
+                if (vertices[j].colour == 1) {
+                    partition1++;
+                } else if (vertices[j].colour == -1) {
+                    partition2++;
                 }
             }
-            if (partition1 > partition2) {
-                vertices[i].colour = -1;
-            } else {
-                vertices[i].colour = 1;
-            }
-            partition1 = 0;
-            partition2 = 0;
         }
+        if (partition1 > partition2) {
+            vertices[i].colour = -1;
+        } else {
+            vertices[i].colour = 1;
+        }
+        partition1 = 0;
+        partition2 = 0;
+    }
 }
 
 /*******************************************************************************
