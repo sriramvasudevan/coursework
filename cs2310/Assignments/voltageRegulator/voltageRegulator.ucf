@@ -1,0 +1,8 @@
+NET "ip_volt<3>" LOC = "P15";
+NET "ip_volt<2>" LOC = "C14";
+NET "ip_volt<1>" LOC = "D14";
+NET "ip_volt<0>" LOC = "A10";
+NET "op_volt<3>" LOC = "L14";
+NET "op_volt<2>" LOC = "N14";
+NET "op_volt<1>" LOC = "M14";
+NET "op_volt<0>" LOC = "U18";

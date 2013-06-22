@@ -1,0 +1,8 @@
+NET "clk" LOC="L15";
+NET "start_stop" LOC=”D14”;
+NET "up_down" LOC=”A10”;
+NET "clk_out" LOC="M13";
+NET "floor_no<3>" LOC=”L14”;
+NET "floor_no<2>" LOC=”N14”;
+NET "floor_no<1>" LOC=”M14”;
+NET "floor_no<0>" LOC=”U18”;

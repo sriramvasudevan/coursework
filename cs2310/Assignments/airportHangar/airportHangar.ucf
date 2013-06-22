@@ -1,0 +1,6 @@
+NET "Hanger" LOC = "U18";
+NET "Airport" LOC = "A10";
+NET "PlaneNo<3>" LOC = "P12";
+NET "PlaneNo<2>" LOC = "P15";
+NET "PlaneNo<1>" LOC = "C14";
+NET "PlaneNo<0>" LOC = "D14";

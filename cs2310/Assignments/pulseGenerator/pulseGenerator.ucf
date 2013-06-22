@@ -1,0 +1,6 @@
+NET "clk" LOC="L15";
+NET "initial_state<2>" LOC="C14";
+NET "initial_state<1>" LOC="D14";
+NET "initial_state<0>" LOC="A10";
+NET "pulse" LOC="U18";
+NET "clk_out" LOC="M14";

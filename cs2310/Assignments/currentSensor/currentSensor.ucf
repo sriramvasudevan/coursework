@@ -1,0 +1,14 @@
+NET "current_I1<2>" LOC="R5";
+NET "current_I1<1>" LOC="P12";
+NET "current_I1<0>" LOC="P15";
+NET "current_I2<2>" LOC="C14";
+NET "current_I2<1>" LOC="D14";
+NET "current_I2<0>" LOC="A10";
+NET "warning_bit" LOC="D4";
+NET "current_I3_tens<2>" LOC="P16";
+NET "current_I3_tens<1>" LOC="N12";
+NET "current_I3_tens<0>" LOC="M13";
+NET "current_I3_ones<3>" LOC="L14";
+NET "current_I3_ones<2>" LOC="N14";
+NET "current_I3_ones<1>" LOC="M14";
+NET "current_I3_ones<0>" LOC="U18";

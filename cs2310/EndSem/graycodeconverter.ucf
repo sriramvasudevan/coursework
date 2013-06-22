@@ -1,0 +1,8 @@
+NET "a<3>" LOC="P15";
+NET "a<2>" LOC="C14";
+NET "a<1>" LOC="D14";
+NET "a<0>" LOC="A10";
+NET "b<3>" LOC="L14";
+NET "b<2>" LOC="N14";
+NET "b<1>" LOC="M14";
+NET "b<0>" LOC="U18";

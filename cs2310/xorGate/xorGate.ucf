@@ -1,0 +1,3 @@
+NET "a" LOC = "E4";
+NET "b" LOC = "T5";
+NET "c" LOC = "P16";

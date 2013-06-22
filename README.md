@@ -1,4 +1,4 @@
-cs2110
-======
+CSE Lab Courses at IIT-M
+========================
 
-Contains code for CS2110 - Computer Programming Lab
+Contains code for various lab courses undertaken.

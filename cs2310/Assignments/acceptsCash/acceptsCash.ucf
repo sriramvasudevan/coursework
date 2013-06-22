@@ -1,0 +1,6 @@
+NET "type" LOC = "U18";
+NET "number<4>" LOC = "P12";
+NET "number<3>" LOC = "P15";
+NET "number<2>" LOC = "C14";
+NET "number<1>" LOC = "D14";
+NET "number<0>" LOC = "A10";
