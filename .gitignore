@@ -1,2 +1,6 @@
 *.swp
 *~
+*.class
+*.log
+*.aux
+*.out
