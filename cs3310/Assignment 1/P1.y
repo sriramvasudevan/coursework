@@ -8,7 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "LinkedList.h"
+#include "LinkedDef.h"
 
+LinkedDef* deflist;
 %}
 
 %union{
@@ -73,8 +75,10 @@ Goal : MacroDefinition MainClass TypeDeclaration ENDOFFILE  {
         appendList($$, $1);
         appendList($$, $2);
         appendList($$, $3);
-        clear($$);
+        printClear($$);
         free($$);
+        clearDef(deflist);
+        free(deflist);
         exit(0);
      }
      ;
@@ -297,10 +301,13 @@ Statement :	'{' StatementList '}' {
           }
           | IDENTIFIER '(' ExpList ')' ';' {
               $$ = LinkedList_new();
-              append($$, $1);
-              append($$, "(");
-              appendList($$, $3);
-              append($$, ");\n");
+              int success = findRepDef(deflist, $1, $3, $$);
+              if(success==0) {
+                  append($$, $1);
+                  append($$, "(");
+                  appendList($$, $3);
+                  append($$, ");\n");
+              }
           } /* Macro stmt call */
           ;
 
@@ -362,10 +369,13 @@ Statement2 :	'{' StatementList '}' {
            }
            | IDENTIFIER '(' ExpList ')' ';' {
                $$ = LinkedList_new();
-               append($$, $1);
-               append($$, "(");
-               appendList($$, $3);
-               append($$, ");\n");
+               int success = findRepDef(deflist, $1, $3, $$);
+               if(success==0) {
+                   append($$, $1);
+                   append($$, "(");
+                   appendList($$, $3);
+                   append($$, ");\n");
+               }
            } /* Macro stmt call */
            ;
 /*Other choice ends here*/
@@ -459,10 +469,13 @@ Expression : PrimaryExpression '&' PrimaryExpression {
 
 MacroCall : IDENTIFIER '(' ExpList ')' /* Macro expr call */ {
               $$ = LinkedList_new();
-              append($$, $1);
-              append($$, "(");
-              appendList($$, $3);
-              append($$, ")");
+              int success = findRepDef(deflist, $1, $3, $$);
+              if(success==0) {
+                  append($$, $1);
+                  append($$, "(");
+                  appendList($$, $3);
+                  append($$, ")");
+              }
           }
           ;
 
@@ -580,27 +593,15 @@ MacroDefinition : /* empty */   {
 
 MacroDefStatement :	'#' DEFINE IDENTIFIER '(' MacroDefList ')' '{' StatementList '}' {
                       $$ = LinkedList_new();
-                      append($$, "#");
-                      append($$, $2);
-                      append($$, $3);
-                      append($$, "(");
-                      appendList($$, $5);
-                      append($$, ") {\n");
-                      appendList($$, $8);
-                      append($$, "}\n");
+                      
+                      pushDef(deflist, $3, $5, $8);
                   }
                   ;
 
 MacroDefExpression : '#' DEFINE IDENTIFIER '(' MacroDefList ')' '(' Expression ')' {
                       $$ = LinkedList_new();
-                      append($$, "#");
-                      append($$, $2);
-                      append($$, $3);
-                      append($$, "(");
-                      appendList($$, $5);
-                      append($$, ") (");
-                      appendList($$, $8);
-                      append($$, ")\n");
+
+                      pushDef(deflist, $3, $5, $8);
                    }
                    ;
 
@@ -628,6 +629,7 @@ MDefList: IDENTIFIER {
 %%
 
 main (int argc, char **argv) {
+  deflist = LinkedDef_new();
   yyparse();
 }
 

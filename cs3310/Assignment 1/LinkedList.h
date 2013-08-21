@@ -25,13 +25,12 @@ typedef struct L {
 }LinkedList;
 
 //Functions
+Node* Node_new(TYPE, Node*);
 LinkedList* LinkedList_new();
 void clear(LinkedList*);
+void printClear(LinkedList*);
 TYPE rem(LinkedList* list);
-int is_empty(LinkedList*);
 void appendList(LinkedList*, LinkedList*);
-void print(LinkedList*);
 void append(LinkedList*, TYPE);
-Node* Node_new(TYPE, Node*);
 
 #endif
