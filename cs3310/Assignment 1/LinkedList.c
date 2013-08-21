@@ -121,14 +121,6 @@ void clear(LinkedList* list) {
     }
 }
 
-void print(LinkedList* list) {
-    Node* i;
-    for (i = list->front; i != NULL; i = i->next) {
-        printf("%s ", i->value);
-    }
-    printf("\n");
-}
-
 void printClear(LinkedList* list) {
     Node* i;
     for (i = list->front; i != NULL; i = i->next) {

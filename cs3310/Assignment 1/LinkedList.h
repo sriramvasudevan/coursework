@@ -39,7 +39,6 @@ void appendLoL(LoL*, LinkedList*);
 void clear(LinkedList*);
 void clearLoL(LoL*);
 void remLoL(LoL*);
-void print(LinkedList* list);
 void printClear(LinkedList*);
 TYPE rem(LinkedList* list);
 void appendList(LinkedList*, LinkedList*);
