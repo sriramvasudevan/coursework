@@ -18,65 +18,48 @@
  * 
  ******************************************************************************/
 
-void tokenize(LinkedList* args) {
+
+LoL* tokenize(LinkedList* args) {
     int open_p = 0;
     Node* i;
-    Node* temp;
-    Node* last_arg = args->front;
-    char* a;
-    if (last_arg!=NULL) {
-        if(strcmp(last_arg->value, "(")==0) {
-            open_p++;
-        }
-        for(i=last_arg->next; i!=NULL;i=last_arg->next) {
+    LoL* tk_list = LoL_new();
+    LinkedList* a = LinkedList_new();
+    if (args->front!=NULL) {
+        for(i=args->front; i!=NULL; i=i->next) {
             if(strcmp(i->value, "(")==0) {
-                a = (char*) malloc(sizeof(char)*strlen(last_arg->value)+strlen(i->value)+1);
-                strcpy(a, last_arg->value);
-                strcat(a, i->value);
-                last_arg->value = a;
-                last_arg->next = i->next;
-                free(i);
+                append(a, i->value);
                 open_p++;
                 continue;
             }
             else if (strcmp(i->value, ")")==0) {
-                a = (char*) malloc(sizeof(char)*strlen(last_arg->value)+strlen(i->value)+1);
-                strcpy(a, last_arg->value);
-                strcat(a, i->value);
-                last_arg->value = a;
-                last_arg->next = i->next;
-                free(i);
+                append(a, i->value);
                 open_p--;
                 continue;
             }
 
             if(open_p==0) {
                 if(strcmp(i->value, ",")==0) {
-                    last_arg->next = i->next;
-                    free(i);
-                    last_arg = last_arg->next;
-                    if(strcmp(last_arg->value, "(")==0) {
-                        open_p++;
-                    }
+                    appendLoL(tk_list, a);
+                    a = LinkedList_new();
                     continue;
                 }
             }
-
-            a = (char*) malloc(sizeof(char)*strlen(last_arg->value)+strlen(i->value)+1);
-            strcpy(a, last_arg->value);
-            strcat(a, i->value);
-            last_arg->value = a;
-            last_arg->next = i->next;
-            free(i);
+            append(a, i->value);
         }
+        appendLoL(tk_list, a);
     }
+    clear(args);
+    free(args);
+    return tk_list;
 }
 
 NodeDef* NodeDef_new(char* macro, LinkedList* args, LinkedList* body, NodeDef* next) { 
     NodeDef* p = (NodeDef*) malloc(sizeof(NodeDef));
     p->macro = macro;
-    tokenize(args);
-    p->args = args;
+    //assuming that for the definition, the args will be only identifiers
+    //ie., only single-element Linked Lists will be in the LoL.
+    LoL* tk_list = tokenize(args);
+    p->args = tk_list;
     p->body = body;
     p->next = next;
     return p;
@@ -122,19 +105,24 @@ int findRepDef(LinkedDef* list, char* macro, LinkedList* args, LinkedList* resul
         return 0; 
     }
 
-    tokenize(args);
+    LoL* tk_list = tokenize(args);
 
-    Node* def_arg;
-    Node* rep_arg;
+    LinkedList* def_arg;
+    LinkedList* rep_arg;
 
     //no. of args args mismatch won't be there
     //no args case is a trivial instance of below for loop
     Node* j;
     for(j=i->body->front; j!=NULL; j=j->next) {
-        for(def_arg=i->args->front, rep_arg=args->front; def_arg!=NULL && rep_arg!=NULL; def_arg=def_arg->next, rep_arg=rep_arg->next) {
-            if(strcmp(j->value,def_arg->value)==0) {
+        for(def_arg=i->args->front, rep_arg=tk_list->front; def_arg!=NULL && rep_arg!=NULL; def_arg=def_arg->next, rep_arg=rep_arg->next) {
+            if(strcmp(j->value,def_arg->front->value)==0) {
                 //replace with rep_arg and break
-                append(result, rep_arg->value);
+                {
+                    Node* temp;
+                    for(temp=rep_arg->front; temp!=NULL; temp=temp->next) {
+                        append(result, temp->value);
+                    }
+                }
                 break;
             }
         }
@@ -144,8 +132,8 @@ int findRepDef(LinkedDef* list, char* macro, LinkedList* args, LinkedList* resul
             append(result, j->value); 
         }
     }
-    clear(args);
-    free(args);
+    clearLoL(tk_list);
+    free(tk_list);
     return 1;
 }
 

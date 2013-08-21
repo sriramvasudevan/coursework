@@ -11,7 +11,7 @@
 //Node of the linked list.
 typedef struct ND {
         char* macro;
-        LinkedList* args;
+        LoL* args;
         LinkedList* body;
         struct ND *next;
 }NodeDef;
@@ -27,7 +27,7 @@ LinkedDef* LinkedDef_new();
 void pushDef(LinkedDef*, char*, LinkedList*, LinkedList*);
 void popDef(LinkedDef*);
 void clearDef(LinkedDef*);
-void tokenize(LinkedList*);
+LoL* tokenize(LinkedList*);
 int findRepDef(LinkedDef*, char*, LinkedList*, LinkedList*);
 
 #endif

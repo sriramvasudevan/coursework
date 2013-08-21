@@ -22,12 +22,24 @@ typedef struct N {
 typedef struct L {
         Node* front;
         Node* back;
+        struct L* next;
 }LinkedList;
+
+//List of Lists
+typedef struct LL {
+        LinkedList* front;
+        LinkedList* back;
+}LoL;
 
 //Functions
 Node* Node_new(TYPE, Node*);
 LinkedList* LinkedList_new();
+LoL* LoL_new();
+void appendLoL(LoL*, LinkedList*);
 void clear(LinkedList*);
+void clearLoL(LoL*);
+void remLoL(LoL*);
+void print(LinkedList* list);
 void printClear(LinkedList*);
 TYPE rem(LinkedList* list);
 void appendList(LinkedList*, LinkedList*);

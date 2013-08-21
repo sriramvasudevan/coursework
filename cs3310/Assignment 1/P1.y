@@ -642,5 +642,5 @@ main (int argc, char **argv) {
 }
 
 yyerror (char *s) {
-  fprintf(stderr, "// Failed to parse macrojava code.\n");
+  fprintf(stdout, "// Failed to parse macrojava code.\n");
 }

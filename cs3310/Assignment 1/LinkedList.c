@@ -32,7 +32,15 @@ LinkedList* LinkedList_new() {
   LinkedList* p = (LinkedList*) malloc(sizeof(LinkedList));
   p->front = NULL;
   p->back = NULL;
+  p->next = NULL;
   return p;
+}
+
+LoL* LoL_new() {
+    LoL* p = (LoL*) malloc(sizeof(LoL));
+    p->front = NULL;
+    p->back = NULL;
+    return p;
 }
 
 void append(LinkedList* list, TYPE value) {
@@ -44,6 +52,37 @@ void append(LinkedList* list, TYPE value) {
         list->front = new_node;
     }
     list->back = new_node;
+}
+
+void appendLoL(LoL* list, LinkedList* arg) {
+    if(list->back != NULL ) {
+        list->back->next = arg;
+    }
+    else {
+        list->front = arg;
+    }
+    list->back = arg;
+}
+
+void clearLoL(LoL* list) {
+    LinkedList* i;
+    for (i = list->front; i != NULL; i = i->next) {
+        remLoL(list);
+    }
+}
+
+void remLoL(LoL* list) {
+    if (list->front == NULL) {
+        fprintf(stderr, "ERROR : The list is empty.\n");
+        exit(-1);
+    }
+    LinkedList* old_front = list->front;
+    if (list->front == list->back) {
+        list->back = NULL;
+    }
+    list->front = list->front->next;
+    clear(old_front);
+    free(old_front);
 }
 
 void appendList(LinkedList* list, LinkedList* addon) {
@@ -80,6 +119,14 @@ void clear(LinkedList* list) {
     for (i = list->front; i != NULL; i = i->next) {
         temp = rem(list);
     }
+}
+
+void print(LinkedList* list) {
+    Node* i;
+    for (i = list->front; i != NULL; i = i->next) {
+        printf("%s ", i->value);
+    }
+    printf("\n");
 }
 
 void printClear(LinkedList* list) {
