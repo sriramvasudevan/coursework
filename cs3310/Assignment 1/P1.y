@@ -83,16 +83,16 @@ MainClass :	CLASS IDENTIFIER '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDEN
             $$ = LinkedList_new();
             append($$, $1);
             append($$, $2);
-            append($$, "{");
+            append($$, "{\n");
             append($$, $4);
             append($$, $5);
             append($$, $6);
             append($$, $7);
             append($$, "(");
             append($$, $9);
-            append($$, "[]");
+            append($$, "[ ]");
             append($$, $12);
-            append($$, "){");
+            append($$, ") {\n");
             append($$, $15);
             append($$, ".");
             append($$, $17);
@@ -100,7 +100,7 @@ MainClass :	CLASS IDENTIFIER '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' IDEN
             append($$, $19);
             append($$, "(");
             appendList($$, $21);
-            append($$, ");}}");
+            append($$, ");\n}\n}\n");
           }
           ;
 
@@ -112,10 +112,10 @@ TypeDeclaration : /* empty */ {
                     appendList($$, $1);
                     append($$, $2);
                     append($$, $3);
-                    append($$, "{");
+                    append($$, "{\n");
                     appendList($$, $5);
                     appendList($$, $6);
-                    append($$, "}");
+                    append($$, "}\n");
                 }
                 | TypeDeclaration CLASS IDENTIFIER EXTENDS IDENTIFIER '{' TypeIdentList MethodDeclaration '}' {
                     $$ = LinkedList_new();
@@ -124,10 +124,10 @@ TypeDeclaration : /* empty */ {
                     append($$, $3);
                     append($$, $4);
                     append($$, $5);
-                    append($$, "{");
+                    append($$, "{\n");
                     appendList($$, $7);
                     appendList($$, $8);
-                    append($$, "}");
+                    append($$, "}\n");
                 }
                 ;
 
@@ -139,7 +139,7 @@ TypeIdentList : /* empty */ {
                   appendList($$, $1);
                   appendList($$, $2);
                   append($$, $3);
-                  append($$, ";");
+                  append($$, ";\n");
               }
               ;
 
@@ -154,12 +154,12 @@ MethodDeclaration : /* empty */ {
                       append($$, $4);
                       append($$, "(");
                       appendList($$, $6);
-                      append($$, "){");
+                      append($$, "){\n");
                       appendList($$, $9);
                       appendList($$, $10);
                       append($$, $11);
                       appendList($$, $12);
-                      append($$, ";}");
+                      append($$, ";\n}\n");
                   }
                   ;
 MethodArgList : /* empty */ {
@@ -188,7 +188,7 @@ MArgList : Type IDENTIFIER {
 Type : INT '[' ']' {
         $$ = LinkedList_new();
         append($$, $1);
-        append($$, "[]");
+        append($$, "[ ]");
      }
      | BOOLEAN {
         $$ = LinkedList_new();
@@ -238,9 +238,9 @@ StatementList : /* empty */ {
 /* The other choice to remove S/R for if-else (works) */
 Statement :	'{' StatementList '}' {
               $$ = LinkedList_new();
-              append($$, "{");
+              append($$, "{\n");
               appendList($$, $2);
-              append($$, "}");
+              append($$, "}\n");
           }
           | SYSTEM '.' OUT '.' PRINTLN '(' Expression ')' ';' {
               $$ = LinkedList_new();
@@ -251,23 +251,23 @@ Statement :	'{' StatementList '}' {
               append($$, $5);
               append($$, "(");
               appendList($$, $7);
-              append($$, ");");
+              append($$, ");\n");
           }
           | IDENTIFIER '=' Expression ';' {
               $$ = LinkedList_new();
               append($$, $1);
               append($$, "=");
               appendList($$, $3);
-              append($$, ";");
+              append($$, ";\n");
           }
           | IDENTIFIER '[' Expression ']' '=' Expression ';' {
               $$ = LinkedList_new();
               append($$, $1);
               append($$, "[");
               appendList($$, $3);
-              append($$, "]=");
+              append($$, "] =");
               appendList($$, $6);
-              append($$, ";");
+              append($$, ";\n");
           }
           | IF '(' Expression ')' Statement {
               $$ = LinkedList_new();
@@ -300,7 +300,7 @@ Statement :	'{' StatementList '}' {
               append($$, $1);
               append($$, "(");
               appendList($$, $3);
-              append($$, ");");
+              append($$, ");\n");
           } /* Macro stmt call */
           ;
 
@@ -311,9 +311,9 @@ Statement :	'{' StatementList '}' {
  */
 Statement2 :	'{' StatementList '}' {
                $$ = LinkedList_new();
-               append($$, "{");
+               append($$, "{\n");
                appendList($$, $2);
-               append($$, "}");
+               append($$, "}\n");
            }
            | SYSTEM '.' OUT '.' PRINTLN '(' Expression ')' ';' {
                $$ = LinkedList_new();
@@ -324,23 +324,23 @@ Statement2 :	'{' StatementList '}' {
                append($$, $5);
                append($$, "(");
                appendList($$, $7);
-               append($$, ");");
+               append($$, ");\n");
            }
            | IDENTIFIER '=' Expression ';' {
                $$ = LinkedList_new();
                append($$, $1);
                append($$, "=");
                appendList($$, $3);
-               append($$, ";");
+               append($$, ";\n");
            }
            | IDENTIFIER '[' Expression ']' '=' Expression ';' {
                $$ = LinkedList_new();
                append($$, $1);
                append($$, "[");
                appendList($$, $3);
-               append($$, "]=");
+               append($$, "] =");
                appendList($$, $6);
-               append($$, ";");
+               append($$, ";\n");
            }
            | IF '(' Expression ')' Statement2 ELSE Statement2 {
                $$ = LinkedList_new();
@@ -365,7 +365,7 @@ Statement2 :	'{' StatementList '}' {
                append($$, $1);
                append($$, "(");
                appendList($$, $3);
-               append($$, ");");
+               append($$, ");\n");
            } /* Macro stmt call */
            ;
 /*Other choice ends here*/
@@ -585,9 +585,9 @@ MacroDefStatement :	'#' DEFINE IDENTIFIER '(' MacroDefList ')' '{' StatementList
                       append($$, $3);
                       append($$, "(");
                       appendList($$, $5);
-                      append($$, "){");
+                      append($$, ") {\n");
                       appendList($$, $8);
-                      append($$, "}");
+                      append($$, "}\n");
                   }
                   ;
 
@@ -598,9 +598,9 @@ MacroDefExpression : '#' DEFINE IDENTIFIER '(' MacroDefList ')' '(' Expression '
                       append($$, $3);
                       append($$, "(");
                       appendList($$, $5);
-                      append($$, ")(");
+                      append($$, ") (");
                       appendList($$, $8);
-                      append($$, ")");
+                      append($$, ")\n");
                    }
                    ;
 

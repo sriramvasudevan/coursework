@@ -48,4 +48,3 @@ OPERATOR [+\-\*\/<=&!]
 <<EOF>>               {return ENDOFFILE;}
 
 %%
-/*.                     {return ERROR;}*/

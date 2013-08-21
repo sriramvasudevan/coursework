@@ -4,4 +4,4 @@ all:
 	gcc -o P1 P1.tab.c lex.yy.c LinkedList.c -lfl
 
 clean:
-	rm -rf *~
+	rm -rf *~ *.output
