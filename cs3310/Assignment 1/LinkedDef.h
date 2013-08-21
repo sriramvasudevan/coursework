@@ -27,6 +27,7 @@ LinkedDef* LinkedDef_new();
 void pushDef(LinkedDef*, char*, LinkedList*, LinkedList*);
 void popDef(LinkedDef*);
 void clearDef(LinkedDef*);
+void tokenize(LinkedList*);
 int findRepDef(LinkedDef*, char*, LinkedList*, LinkedList*);
 
 #endif
