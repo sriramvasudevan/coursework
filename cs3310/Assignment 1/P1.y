@@ -594,14 +594,22 @@ MacroDefinition : /* empty */   {
 MacroDefStatement :	'#' DEFINE IDENTIFIER '(' MacroDefList ')' '{' StatementList '}' {
                       $$ = LinkedList_new();
                       
-                      pushDef(deflist, $3, $5, $8);
+                      LinkedList* st_list = LinkedList_new();
+                      append(st_list, "{");
+                      appendList(st_list, $8);
+                      append(st_list, "}");
+                      pushDef(deflist, $3, $5, st_list);
                   }
                   ;
 
 MacroDefExpression : '#' DEFINE IDENTIFIER '(' MacroDefList ')' '(' Expression ')' {
                       $$ = LinkedList_new();
 
-                      pushDef(deflist, $3, $5, $8);
+                      LinkedList* st_list = LinkedList_new();
+                      append(st_list, "(");
+                      appendList(st_list, $8);
+                      append(st_list, ")");
+                      pushDef(deflist, $3, $5, st_list);
                    }
                    ;
 

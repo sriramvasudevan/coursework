@@ -1,7 +1,5 @@
 #! /bin/bash
 
-make
-
 for i in test/*
 do
     folder=op/${i:5:-5}
@@ -9,6 +7,6 @@ do
     ./P1 < $i > $folder/${i:5}
     javac $folder/${i:5}
     cd $folder
-    java *.class > output
+    java ${i:5:-5}> output
     cd ../../
 done
