@@ -4,7 +4,7 @@ all:
 	gcc -o P1 P1.tab.c lex.yy.c LinkedList.c LinkedDef.c -lfl
 
 clean:
-	rm -rf *~ *.output op/ mini/*/*.class mini/*/output mini/*/*~ *.log
+	rm -rf *~ *.output op/ mini/*/*.class mini/*/output mini/*/*~ *.log *.tab.* lex.yy.c 
 
 test: all
 	./test.sh
