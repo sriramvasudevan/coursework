@@ -1,0 +1,2 @@
+Make append take variable arguments
+Overload append to take struct and char*
