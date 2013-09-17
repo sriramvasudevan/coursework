@@ -61,8 +61,8 @@ public class SymbolTable {
     }
 
     void printError(String error) {
-        System.out.println(error);
-        // System.out.println("Type error");
+        // System.out.println(error);
+        System.out.println("Type error");
         System.exit(-1);
     }
 

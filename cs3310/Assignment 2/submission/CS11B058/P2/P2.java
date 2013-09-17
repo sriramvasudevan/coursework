@@ -1,24 +1,19 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import syntaxtree.*;
 import visitor.*;
 import base.*;
 
-public class typeCheck {
+public class P2 {
 
     /**
      * @param args
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         try {
-            Node root = new MiniJavaParser(new FileInputStream(
-                    "test/Factorial4.java")).Goal();
-            // Node root = new MiniJavaParser(System.in).Goal();
+
+            Node root = new MiniJavaParser(System.in).Goal();
 
             symbolTableBuilderVisitor stb_visitor = new symbolTableBuilderVisitor();
             root.accept(stb_visitor);
-            //stb_visitor.symtab.printTable();
 
             typeCheckVisitor tc_visitor = new typeCheckVisitor();
             tc_visitor.symtab = stb_visitor.symtab;
