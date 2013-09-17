@@ -21,6 +21,12 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
     ClassDef           curr_class;
     MethodDef          curr_method;
 
+    void printError(String error) {
+        System.out.println(error);
+        // System.out.println("Type error");
+        System.exit(-1);
+    }
+
     //
     // Auto class visitors--probably don't need to be overridden.
     //
@@ -81,6 +87,10 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
         n.f0.accept(this);
         n.f1.accept(this);
         n.f2.accept(this);
+
+        // Symbol table built.
+        // Make classes independent.
+        symtab.makeIndependent();
         return _ret;
     }
 
@@ -95,13 +105,22 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
 
         classname = n.f1.f0.toString();
         curr_class = new ClassDef();
+        if (symtab.classes.containsKey(classname)) {
+            printError("Class redeclaration");
+        }
         symtab.classes.put(classname, curr_class);
 
         methname = n.f6.toString();
         curr_method = new MethodDef();
+        if (curr_class.methods.containsKey(methname)) {
+            printError("Method redeclaration");
+        }
         curr_class.methods.put(methname, curr_method);
 
         curr_method.ret_type = n.f5.toString();
+        if (curr_method.params.containsKey(n.f11.f0.toString())) {
+            printError("Parameter variable redeclaration");
+        }
         curr_method.params.put(n.f11.f0.toString(), "String[]");
 
         n.f0.accept(this);
@@ -141,8 +160,11 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
 
         classname = n.f1.f0.toString();
-        methname = "";
+        methname = null;
         curr_class = new ClassDef();
+        if (symtab.classes.containsKey(classname)) {
+            printError("Class redeclaration");
+        }
         symtab.classes.put(classname, curr_class);
 
         n.f0.accept(this);
@@ -162,8 +184,11 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
 
         classname = n.f1.f0.toString();
-        methname = "";
+        methname = null;
         curr_class = new ClassDef();
+        if (symtab.classes.containsKey(classname)) {
+            printError("Class redeclaration");
+        }
         symtab.classes.put(classname, curr_class);
 
         curr_class.parent = n.f3.f0.toString();
@@ -185,10 +210,16 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(VarDeclaration n) {
         R _ret = null;
 
-        if (methname.equals("")) {
+        if (methname==null) {
+            if (curr_class.vars.containsKey(n.f1.f0.toString())) {
+                printError("Variable redeclaration in class defn.");
+            }
             curr_class.vars.put(n.f1.f0.toString(), (String) n.f0.accept(this));
         }
         else {
+            if (curr_method.locals.containsKey(n.f1.f0.toString())) {
+                printError("Variable redeclaration in method defn.");
+            }
             curr_method.locals.put(n.f1.f0.toString(),
                     (String) n.f0.accept(this));
         }
@@ -209,6 +240,9 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
 
         methname = n.f2.f0.toString();
         curr_method = new MethodDef();
+        if (curr_class.methods.containsKey(methname)) {
+            printError("Method redeclaration.");
+        }
         curr_class.methods.put(methname, curr_method);
 
         curr_method.ret_type = (String) n.f1.accept(this);
@@ -245,6 +279,9 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(FormalParameter n) {
         R _ret = null;
 
+        if (curr_method.params.containsKey(n.f1.f0.toString())) {
+            printError("Parameter variable redeclaration.");
+        }
         curr_method.params.put(n.f1.f0.toString(), (String) n.f0.accept(this));
 
         n.f0.accept(this);
@@ -613,5 +650,4 @@ public class symbolTableBuilderVisitor<R> implements GJNoArguVisitor<R> {
         n.f2.accept(this);
         return _ret;
     }
-
 }

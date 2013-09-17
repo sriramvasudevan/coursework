@@ -15,15 +15,17 @@ import base.*;
  */
 public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
 
-    public SymbolTable symtab; // No new SymbolTable() because it must be passed
-                               // a symbol table.
-    String             classname, methname, called_classname, called_methname;
-    ClassDef           curr_class, called_curr_class;
-    MethodDef          curr_method, called_curr_method;
-    Iterator<String>   hash_it;
-    int                param_nos;
+    public SymbolTable                  symtab; // No new SymbolTable() because
+                                                 // it must be passed
+                                                 // a symbol table.
+    String                              classname, methname, called_classname,
+            called_methname;
+    ClassDef                            curr_class, called_curr_class;
+    MethodDef                           curr_method, called_curr_method;
+    Iterator<Map.Entry<String, String>> hash_it;
+    int                                 param_nos;
 
-    public static void printError(String error) {
+    void printError(String error) {
         System.out.println(error);
         // System.out.println("Type error");
         System.exit(-1);
@@ -100,12 +102,17 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
      */
     public R visit(MainClass n) {
         R _ret = null;
-        classname = (String) n.f1.f0.toString();
+        classname = n.f1.f0.toString();
+        if (!symtab.classes.containsKey(classname)) {
+            printError("Non-existant class.");
+        }
         curr_class = symtab.classes.get(classname);
         methname = n.f6.toString();
+        if (!curr_class.methods.containsKey(methname)) {
+            printError("Non-existant method.");
+        }
         curr_method = curr_class.methods.get(methname);
-        curr_method.params.put(n.f11.f0.toString(), "String[]");
-        curr_method.ret_type = "void";
+
         n.f14.accept(this);
         return _ret;
     }
@@ -126,6 +133,9 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(ClassDeclaration n) {
         R _ret = null;
         classname = n.f1.f0.toString();
+        if (!symtab.classes.containsKey(classname)) {
+            printError("Non-existant class.");
+        }
         curr_class = symtab.classes.get(classname);
         methname = null;
         n.f3.accept(this);
@@ -140,11 +150,11 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(ClassExtendsDeclaration n) {
         R _ret = null;
         classname = (String) n.f1.f0.toString();
+        if (!symtab.classes.containsKey(classname)) {
+            printError("Non-existant class.");
+        }
         curr_class = symtab.classes.get(classname);
         methname = null;
-        if (!symtab.classes.containsKey(n.f3.accept(this))) {
-            printError("Parent class doesn't exist.");
-        }
         n.f5.accept(this);
         n.f6.accept(this);
         return _ret;
@@ -168,13 +178,28 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
 
         methname = n.f2.f0.toString();
+        if (!curr_class.methods.containsKey(methname)) {
+            printError("Non-existant method.");
+        }
         curr_method = curr_class.methods.get(methname);
 
+        n.f4.accept(this);
         n.f7.accept(this);
         n.f8.accept(this);
-        if (!n.f1.accept(this).equals(n.f10.accept(this))) {
-            printError("return type doesn't match function definition."
-                    + methname + classname);
+        String exp_ret_type = (String) n.f10.accept(this);
+        if (!exp_ret_type.equals(curr_method.ret_type)) {
+            // Check if it is a class
+            if (!symtab.classes.containsKey(exp_ret_type)) {
+                printError("return type doesn't match function definition."
+                        + methname + classname);
+            }
+            // If it's a class
+            ClassDef ret_class = symtab.classes.get(exp_ret_type);
+            // If not a subtype of the return type
+            if (!ret_class.extend.contains(curr_method.ret_type)) {
+                printError("return type doesn't match function definition."
+                        + methname + classname);
+            }
         }
         return _ret;
     }
@@ -202,7 +227,6 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
      */
     public R visit(FormalParameterRest n) {
         R _ret = null;
-        n.f0.accept(this);
         n.f1.accept(this);
         return _ret;
     }
@@ -254,9 +278,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
      */
     public R visit(Block n) {
         R _ret = null;
-        n.f0.accept(this);
         n.f1.accept(this);
-        n.f2.accept(this);
         return _ret;
     }
 
@@ -267,6 +289,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
 
         String identname = n.f0.f0.toString();
+        String var_type = null;
         if (!curr_method.locals.containsKey(identname)) {
             if (!curr_method.params.containsKey(identname)) {
                 if (!curr_class.vars.containsKey(identname)) {
@@ -274,21 +297,27 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
                             + " class/method doesn't contain " + identname);
                 }
                 else {
-                    if (!curr_class.vars.get(identname).equals(
-                            n.f2.accept(this))) {
-                        printError("Type mismatch in assignment");
-                    }
+                    var_type = curr_class.vars.get(identname);
                 }
             }
             else {
-                if (!curr_method.params.get(identname)
-                        .equals(n.f2.accept(this))) {
-                    printError("Type mismatch in assignment");
-                }
+                var_type = curr_method.params.get(identname);
             }
         }
         else {
-            if (!curr_method.locals.get(identname).equals(n.f2.accept(this))) {
+            var_type = curr_method.locals.get(identname);
+        }
+
+        String exp_type = (String) n.f2.accept(this);
+        if (!exp_type.equals(var_type)) {
+            // Check if it is a class
+            if (!symtab.classes.containsKey(exp_type)) {
+                printError("Type mismatch in assignment");
+            }
+            // If it's a class
+            ClassDef ret_class = symtab.classes.get(exp_type);
+            // If not a subtype of the identifier type
+            if (!ret_class.extend.contains(var_type)) {
                 printError("Type mismatch in assignment");
             }
         }
@@ -303,7 +332,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
 
         String identname = n.f0.f0.toString();
-        String identtype = "";
+        String identtype = null;
 
         if (!curr_method.locals.containsKey(identname)) {
             if (!curr_method.params.containsKey(identname)) {
@@ -326,11 +355,12 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         if (!n.f2.accept(this).equals("int")) {
             printError("Index must be int");
         }
-
-        if (!identtype.substring(0, identtype.length() - 2).equals(
-                n.f5.accept(this))) {
+        // Check if exp_type is int
+        String exp_type = (String) n.f5.accept(this);
+        if (!exp_type.equals("int")) {
             printError("Type mismatch in assignment");
         }
+
         return _ret;
     }
 
@@ -341,7 +371,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(IfStatement n) {
         R _ret = null;
         if (!n.f2.accept(this).equals("boolean")) {
-            printError(n.f2.accept(this) + "if can take only boolean expr.");
+            printError(n.f2.accept(this) + "it can take only boolean expr.");
         }
         n.f4.accept(this);
         n.f6.accept(this);
@@ -447,14 +477,14 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     /**
      * f0 -> PrimaryExpression() f1 -> "[" f2 -> PrimaryExpression() f3 -> "]"
      */
-    public R visit(ArrayLookup n) { // curr_class? Not done.
+    public R visit(ArrayLookup n) {
         R _ret = null;
         String identtype = (String) n.f0.accept(this);
         if (!identtype.equals("int[]")) {
             printError("lookup can be called only on an array" + methname
                     + classname);
         }
-        if (n.f0.f0.which == 3) { // 3 => Identifier, 8 => ArrayAllocation
+        if (n.f0.f0.which == 3) { // 3 => Identifier, 5 => ArrayAllocation
             String identname = ((Identifier) n.f0.f0.choice).f0.toString();
             if (!curr_method.locals.containsKey(identname)
                     && !curr_method.params.containsKey(identname)
@@ -472,21 +502,21 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     /**
      * f0 -> PrimaryExpression() f1 -> "." f2 -> "length"
      */
-    public R visit(ArrayLength n) { // what if not in a curr_method
+    public R visit(ArrayLength n) {
         R _ret = null;
         String identtype = (String) n.f0.accept(this);
         if (!identtype.equals("int[]")) {
             printError("length can be called only on an array");
         }
-        String identname = ((Identifier) n.f0.f0.choice).f0.toString(); // Not
-                                                                        // entirely
-                                                                        // correct.
-                                                                        // Temporary.
-        if (!curr_method.locals.containsKey(identname)
-                && !curr_method.params.containsKey(identname)
-                && !curr_class.vars.containsKey(identname)) {
-            printError(identname
-                    + " doesn't exist in the current method/class.");
+
+        if (n.f0.f0.which == 3) { // 3 => Identifier, 5 => ArrayAllocation
+            String identname = ((Identifier) n.f0.f0.choice).f0.toString();
+            if (!curr_method.locals.containsKey(identname)
+                    && !curr_method.params.containsKey(identname)
+                    && !curr_class.vars.containsKey(identname)) {
+                printError(identname
+                        + " doesn't exist in the current method/class.");
+            }
         }
         return (R) "int";
     }
@@ -495,10 +525,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
      * f0 -> PrimaryExpression() f1 -> "." f2 -> Identifier() f3 -> "(" f4 -> (
      * ExpressionList() )? f5 -> ")"
      */
-    public R visit(MessageSend n) { // Find primaryexp name. Fix all differences
-                                    // between name and type of Identifier().
-                                    // Check if PExp is int[] (.length), or an
-                                    // instance of a class.
+    public R visit(MessageSend n) { 
         R _ret = null;
         called_classname = (String) n.f0.accept(this);
         String temp = called_classname;
@@ -507,14 +534,16 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
                     + n.f2.f0.toString());
         }
 
-        // String objname = ((Identifier) n.f0.f0.choice).f0.toString(); //what
-        // if new obj()?
-        // if ((!curr_method.locals.containsKey(objname))
-        // && (!curr_class.vars.containsKey(objname))) {
-        // printError("Object " + objname + " doesn't exist in " + methname
-        // + " or " + classname);
-        // }
-
+        if (n.f0.f0.which == 3) { // 3 => Identifier, 4 => ThisExpression, 6=>AllocationExpression
+            String objname = ((Identifier) n.f0.f0.choice).f0.toString();
+            if (!curr_method.locals.containsKey(objname)
+                    && !curr_method.params.containsKey(objname)
+                    && !curr_class.vars.containsKey(objname)) {
+                printError(objname
+                        + " doesn't exist in the current method/class.");
+            }
+        }
+        
         called_curr_class = symtab.classes.get(called_classname);
         called_methname = n.f2.f0.toString();
         if (!called_curr_class.methods.containsKey(called_methname)) {
@@ -526,7 +555,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
 
         n.f4.accept(this);
 
-        // These values could have changed inside the f4 call. Reinitialising
+        // These values could have changed inside the f4 call. Reinitializing
         // them with these values.
         called_classname = temp;
         called_curr_class = symtab.classes.get(called_classname);
@@ -534,7 +563,7 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         called_curr_method = called_curr_class.methods.get(called_methname);
 
         if (called_curr_method.params.size() != param_nos) {
-            printError("Unequal no. of parameters");
+            printError("Unequal no. of parameters"+called_methname+called_curr_method.params.size()+" "+param_nos);
         }
         return (R) called_curr_method.ret_type;
     }
@@ -545,13 +574,42 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(ExpressionList n) {
         R _ret = null;
 
-        hash_it = called_curr_method.params.keySet().iterator();
-        String key = hash_it.next();
-        if (!called_curr_method.params.get(key).equals(n.f0.accept(this))) {
-            printError(called_methname + called_classname
-                    + "Actuals type don't match formals type." + methname
-                    + classname);
+        //backup values
+        String temp_cc = called_classname;
+        String temp_cm = called_methname;
+        int temp_p = param_nos;
+        
+        hash_it = called_curr_method.params.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> temp_hash = hash_it; //backup
+        
+        Map.Entry<String, String> entry = hash_it.next();
+        
+        String exp_type = (String) n.f0.accept(this);
+        if (!entry.getValue().equals(exp_type)) {
+            // Check if it is a class
+            if (!symtab.classes.containsKey(exp_type)) {
+                printError(called_methname + called_classname
+                        + "Actuals type don't match formals type." + methname
+                        + classname);
+            }
+            // If it's a class
+            ClassDef ret_class = symtab.classes.get(exp_type);
+            // If not a subtype of the identifier type
+            if (!ret_class.extend.contains(entry.getValue())) {
+                printError(called_methname + called_classname
+                        + "Actuals type don't match formals type." + methname
+                        + classname);
+            }
         }
+        
+        //Restore values
+        called_classname = temp_cc;
+        called_curr_class = symtab.classes.get(called_classname);
+        called_methname = temp_cm;
+        called_curr_method = called_curr_class.methods.get(called_methname);
+        param_nos = temp_p;
+        hash_it = temp_hash;
+        
         param_nos++;
         n.f1.accept(this);
         return _ret;
@@ -562,13 +620,41 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
      */
     public R visit(ExpressionRest n) {
         R _ret = null;
-
-        String key = hash_it.next();
-        if (!called_curr_method.params.get(key).equals(n.f1.accept(this))) {
-            printError(called_methname + called_classname
-                    + "Actuals type don't match formals type." + methname
-                    + classname);
+        
+        //backup values
+        String temp_cc = called_classname;
+        String temp_cm = called_methname;
+        int temp_p = param_nos;
+        Iterator<Map.Entry<String, String>> temp_hash = hash_it; //backup
+        
+        Map.Entry<String, String> entry = hash_it.next();
+        
+        String exp_type = (String) n.f1.accept(this);
+        if (!entry.getValue().equals(exp_type)) {
+            // Check if it is a class
+            if (!symtab.classes.containsKey(exp_type)) {
+                printError(called_methname + called_classname
+                        + "Actuals type don't match formals type." + methname
+                        + classname);
+            }
+            // If it's a class
+            ClassDef ret_class = symtab.classes.get(exp_type);
+            // If not a subtype of the identifier type
+            if (!ret_class.extend.contains(entry.getValue())) {
+                printError(called_methname + called_classname
+                        + "Actuals type don't match formals type." + methname
+                        + classname);
+            }
         }
+        
+        //Restore values
+        called_classname = temp_cc;
+        called_curr_class = symtab.classes.get(called_classname);
+        called_methname = temp_cm;
+        called_curr_method = called_curr_class.methods.get(called_methname);
+        param_nos = temp_p;
+        hash_it = temp_hash;
+        
         param_nos++;
         return _ret;
     }
@@ -621,7 +707,13 @@ public class typeCheckVisitor<R> implements GJNoArguVisitor<R> {
         else if (curr_class.vars.containsKey(n.f0.toString())) {
             return (R) curr_class.vars.get(n.f0.toString());
         }
-        return (R) n.f0.toString(); // It's a class
+        else if (symtab.classes.containsKey(n.f0.toString())) {
+            return (R) n.f0.toString(); // It's a class name
+        }
+        else {
+            printError("Identifier doesn't exist!");
+        }
+        return _ret;
     }
 
     /**

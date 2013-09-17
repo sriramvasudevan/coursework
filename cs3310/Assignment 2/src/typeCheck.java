@@ -13,7 +13,7 @@ public class typeCheck {
     public static void main(String[] args) throws FileNotFoundException {
         try {
             Node root = new MiniJavaParser(new FileInputStream(
-                    "test/BinarySearch.java")).Goal();
+                    "test/testing.java")).Goal();
             // Node root = new MiniJavaParser(System.in).Goal();
 
             symbolTableBuilderVisitor stb_visitor = new symbolTableBuilderVisitor();
