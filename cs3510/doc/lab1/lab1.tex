@@ -1,6 +1,5 @@
 \documentclass[]{article}
 \usepackage[T1]{fontenc}
-\usepackage[margin=0.8in]{geometry}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -19,6 +18,7 @@
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
   \newcommand{\euro}{€}
 \fi
+\usepackage[margin=0.8in]{geometry}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -28,8 +28,8 @@
 \fi
 \hypersetup{breaklinks=true,
             bookmarks=true,
-            pdfauthor={},
-            pdftitle={},
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 1: PC Bootstrap and GCC Calling Conventions},
             colorlinks=true,
             urlcolor=blue,
             linkcolor=magenta,
@@ -142,7 +142,7 @@ A        eax and edx combined into a 64-bit integer (use long longs)
   to step into the beginning of the kernel code.
 \end{itemize}
 
-\subsection{Questions}
+\subsubsection{Questions}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -331,7 +331,7 @@ goto number;
 \end{verbatim}
 \end{itemize}
 
-\subsection{Questions}
+\subsubsection{Questions}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -452,7 +452,7 @@ unsigned int i = 0x00646c72;
 cprintf("H%x Wo%s", 57616, &i);
 \end{verbatim}
 
-  \textbf{What is the output? Explain how this output is arrived.}
+  \textbf{What is the output? Explain how this output is arrived.}\\
 \end{enumerate}
 
 \begin{itemize}
@@ -591,7 +591,7 @@ while (ebp != 0) {
 \item
   The value at the 32-bit location above \texttt{\%ebp} is the value of
   \texttt{eip}. Hence, pointer arithmetic is used to add 4 bytes to
-  \texttt{\%ebp} and \texttt{*} is used to access the
+  \texttt{\%ebp} and \texttt{\textbackslash{}*} is used to access the
   value at the location.
 \item
   Since the arguments are the values above \texttt{eip}, pointer
@@ -623,8 +623,7 @@ while (ebp != 0) {
 
     //debug info
     debuginfo_eip(eip, &info);
-    cprintf("       %s:%d: %.*s+%d\n", info.eip_file,
-    info.eip_line, info.eip_fn_namelen, info.eip_fn_name, eip-info.eip_fn_addr);
+    cprintf("       %s:%d: %.*s+%d\n", info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name, eip-info.eip_fn_addr);
 
     ebp = (int*)(*ebp);
 }

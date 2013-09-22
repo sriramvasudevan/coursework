@@ -232,6 +232,10 @@ tarball: handin-check
 handin-prep:
 	@./handin-prep
 
+# Custom code to make reports for all labs
+doc:
+	@./gen-doc.sh
+
 
 # This magic automatically generates makefile dependencies
 # for header files included from C source files we compile,
@@ -247,4 +251,4 @@ always:
 	@:
 
 .PHONY: all always \
-	handin tarball clean realclean distclean grade handin-prep handin-check
+	handin tarball clean realclean distclean grade handin-prep handin-check doc
