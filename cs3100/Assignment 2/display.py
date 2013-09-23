@@ -1,115 +1,85 @@
 class Display(object):
     def __init__(self):
-        self.
-        'all'
-        'entities'
-        'entity'
-        'counters'
-        'counter'
-        'status'
-        'entry'
-        'exit'
+        self.logs = []
 
-    def printCounter(self):
-        return
+    def appendLog(self,class_name, obj_id, string):
+        self.logs.append([class_name, obj_id, string])
 
-    def printCounters(self):
-        return
-
-    def printEntity(self):
-        return
-
-    def printEntities(self):
-        return
-
-    def printEntry(self):
-        return
-
-    def printExit(self):
-        return
-
-    def printStatus(self):
-        return
-
-    def printAll(self):
-        return
+    def printLog(self):
+        for log in self.logs:
+            print log[2]
 
 
 class DisplayCounter(Display):
-    def __init__(self, counter):
+    def __init__(self, counters):
         Display.__init__(self)
-        self.counter = counter
+        self.counter_list = counters
+
+    def printLog(self):
+        for log in self.logs:
+            if 'counter' in log[0]:
+                if log[1] in self.counter_list:
+                    print log[2]
 
 
-    def printCounter(self):
-        return
+class DisplayCounters(Display):
+    def __init__(self):
+        Display.__init__(self)
 
+    def printLog(self):
+        for log in self.logs:
+            if ("counter" in log[0]) or ("counters" in log[0]):
+                print log[2]
 
-class DisplayCounters(DisplayCounter):
-    def printCounters(self):
-        for counter in self.counter:
-            printCounter()
-            
 
 class DisplayEntity(Display):
-    def __init__(self, entity):
+    def __init__(self, entities):
         Display.__init__(self)
-        self.entity = entity
+        self.entity_list = entities
+
+    def printLog(self):
+        for log in self.logs:
+            if "entity" in log[0]:
+                if log[1] in self.entity_list:
+                    print log[2]
 
 
-    def printEntity(self):
-        return
+class DisplayEntities(Display):
+    def __init__(self):
+        Display.__init__(self)
 
-
-class DisplayEntities(DisplayEntity):
-    def __init__(self, entity):
-        DisplayEntity.__init__(self)
-        self.entity = entity
-
-
-    def printEntities(self):
-        for entity in self.entity:
-            printEntity()
+    def printLog(self):
+        for log in self.logs:
+            if ("entity" in log[0]) or ("entities" in log[0]):
+                print log[2]
 
 
 class DisplayEntry(Display):
-    def __init__(self, entry_queue):
+    def __init__(self):
         Display.__init__(self)
-        self.entry_queue= entry_queue
 
-
-    def printEntry(self):
-        return
+    def printLog(self):
+        for log in self.logs:
+            if "entry" in log[0]:
+                print log[2]
 
 
 class DisplayExit(Display):
-    def __init__(self, exit_queue):
+    def __init__(self):
         Display.__init__(self)
-        self.exit_queue= exit_queue
 
-
-    def printExit(self):
-        return
+    def printLog(self):
+        for log in self.logs:
+            if "exit" in log[0]:
+                print log[2]
 
 
 class DisplayStatus(Display):
-    def __init__(self, exit_queue):
+    def __init__(self):
         Display.__init__(self)
-        self.exit_queue= exit_queue
 
+    def printLog(self):
+        for log in self.logs:
+            if "status" in log[0]:
+                print log[2]
 
-    def printStatus(self):
-        return
-
-
-class DisplayAll(DisplayCounters, DisplayEntities, DisplayEntry, DisplayExit, DisplayStatus):
-    def __init__(self, **kwargs):
-
-
-    def printAll(self):
-        self.printCounters()
-        self.printEntities()
-        self.printEntry()
-        self.printExit()
-        self.printStatus()
-        return

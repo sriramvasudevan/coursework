@@ -7,3 +7,6 @@ class Entity(object):
         self.id = Entity.number
         self.goods_desired = ceil(max_goods_desired*desire_dist(**kwargs))
         self.curr_goods = 0
+        self.at = None
+        self.entry_wait = 0
+        self.exit_wait = 0
