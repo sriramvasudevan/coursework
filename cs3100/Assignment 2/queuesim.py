@@ -8,7 +8,7 @@ def constDist(**kwargs):
 
 
 class QueueSimulator(object):
-    def __init__(self, Counter=Counter, Entity=Entity):
+    def __init__(self, Counter=Counter, Entity=Entity, views):
         # Global variables
         self.Counter = Counter
         self.Entity = Entity
