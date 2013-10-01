@@ -36,7 +36,7 @@ do
             T=`basename $file | sed s/.java//`                
             java P3 < $file > $OP/$T.miniIR                   
             java -jar $PGI < $OP/$T.miniIR  > $OP/$T.out
-            diff  $OP/$T.out $OP/$T.out  > /dev/null
+            diff  $TESTS/$T.out $OP/$T.out  > /dev/null
             if [ $? -eq 0 ]; then                         
                 echo $T passed                           
                 j=$((j+1))
