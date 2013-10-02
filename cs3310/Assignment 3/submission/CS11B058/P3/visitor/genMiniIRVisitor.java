@@ -583,6 +583,8 @@ public class genMiniIRVisitor<R> implements GJNoArguVisitor<R> {
         System.out.println("JUMP L" + jumpelse_label);
 
         System.out.println("L" + else_label);
+        printTab();
+        System.out.println("NOOP");
         // else portion
         n.f6.accept(this);
 
@@ -667,6 +669,7 @@ public class genMiniIRVisitor<R> implements GJNoArguVisitor<R> {
 
         // Initialise bool to false
         int bool_temp = label_count;
+        label_count++;
         printTab();
         System.out.println("\tMOVE TEMP " + bool_temp + " 0");
         // test PE1
@@ -1121,6 +1124,7 @@ public class genMiniIRVisitor<R> implements GJNoArguVisitor<R> {
         label_count++;
         System.out.println("L" + init_label);
         int initdone_label = label_count;
+        label_count++;
         printTab();
         System.out.println("\tCJUMP LT TEMP " + i_temp + " TEMP " + exp_temp
                 + " L" + initdone_label);

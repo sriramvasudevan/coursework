@@ -1,4 +1,4 @@
-class Factorial{
+class Factorial2{
     public static void main(String[] a){
         System.out.println(new Fac().ComputeFac(10));
     }
@@ -42,7 +42,7 @@ class Fac1 extends Fac{
 	}
 	public Fac1 b(Fac f3) {
 		int x;
-		x =  x + (this.fd());
+		x = 1;
 		return f2;
 	}
 	public boolean fd() {

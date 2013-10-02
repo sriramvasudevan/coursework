@@ -32,14 +32,14 @@ do
         MARKS=0                                                
         for file in $TESTS/*.miniIR
         do                                                      
-            FLAG=0
-            TOTAL=$((TOTAL+1))
+            TOTAL=$((TOTAL+2))
             T=`basename $file | sed s/.miniIR//`                
             java P4 < $file > $OP/$T.microIR
             java -jar $PARSER < $OP/$T.microIR > parse.out
             DIFF=`diff -B -w -i parse.out $SUCCESS`
-            if [ $DIFF -eq 0 ]
+            if [ "$DIFF" == "" ]
             then
+                MARKS=$((MARKS+1))
                 echo $T parse successful
             else
                 echo $T parse failed
@@ -55,7 +55,7 @@ do
             fi 
         done  
 
-        echo '$i Grade: $MARKS/$TOTAL'
+        echo $i Grade: $MARKS/$TOTAL
 
         rm parse.out
         rm $TESTS/*.out
@@ -63,7 +63,7 @@ do
         cd ../../
         rm -r $i
 
-        if [[ $j -eq $f ]]
+        if [[ $MARKS -eq $TOTAL ]]
         then
             echo 'Full marks. Ready to submit!'
         else
