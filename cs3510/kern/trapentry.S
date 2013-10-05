@@ -20,26 +20,39 @@
  *   void NAME();
  * where NAME is the argument passed to TRAPHANDLER.
  */
-#define TRAPHANDLER(name, num)						\
+#define TRAPHANDLER(name, num)					             	\
+    .text;                                                      \
 	.globl name;		/* define global symbol for 'name' */	\
 	.type name, @function;	/* symbol type is function */		\
-	.align 2;		/* align function definition */		\
-	name:			/* function starts here */		\
-	pushl $(num);							\
-	jmp _alltraps
+	.align 2;		/* align function definition */	        	\
+	name:			/* function starts here */	             	\
+	pushl $(num);						                    	\
+	jmp _alltraps;                                              \
+    .data;                                                      \
+    .long name
 
 /* Use TRAPHANDLER_NOEC for traps where the CPU doesn't push an error code.
  * It pushes a 0 in place of the error code, so the trap frame has the same
  * format in either case.
  */
 #define TRAPHANDLER_NOEC(name, num)					\
-	.globl name;							\
-	.type name, @function;						\
-	.align 2;							\
-	name:								\
-	pushl $0;							\
-	pushl $(num);							\
-	jmp _alltraps
+    .text;                                          \
+	.globl name;						         	\
+	.type name, @function;			     			\
+	.align 2;						            	\
+	name:							            	\
+	pushl $0;						            	\
+	pushl $(num);					           		\
+	jmp _alltraps;                                  \
+    .data;                                          \
+    .long name
+
+
+# Defining the data used
+.data
+.globl thandlers
+thandlers:
+
 
 .text
 
@@ -86,28 +99,3 @@ _alltraps:
     pushl %esp
     call trap 
 
-
-# Defining the data used
-.data
-.globl thandlers
-thandlers:
-    .long handler0
-    .long handler1
-    .long handler2
-    .long handler3
-    .long handler4
-    .long handler5
-    .long handler6
-    .long handler7
-    .long handler8
-    .long handler9 
-    .long handler10
-    .long handler11
-    .long handler12
-    .long handler13
-    .long handler14
-    .long handler15
-    .long handler16
-    .long handler17
-    .long handler18
-    .long handler19
