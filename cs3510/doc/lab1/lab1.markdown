@@ -240,7 +240,8 @@
 
         //debug info
         debuginfo_eip(eip, &info);
-        cprintf("       %s:%d: %.*s+%d\n", info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name, eip-info.eip_fn_addr);
+        cprintf("%s:%d: %.*s+%d\n", info.eip_file, info.eip_line,
+                info.eip_fn_namelen, info.eip_fn_name, eip-info.eip_fn_addr);
 
         ebp = (int*)(*ebp);
     }
