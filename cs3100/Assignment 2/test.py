@@ -79,9 +79,9 @@ def main():
 
     # Create a new simulator instance with a custom entity
     # and PoV.
-    queue_simulator = QS(Entity=Car,view=['counters'])
+    queue_simulator = QS(Entity=Car,view=['entity', 10])
     # init the countets
-    queue_simulator.initCounters(goods_dist=random)
+    queue_simulator.initCounters(goods_dist=random, no_counters=10)
     # init the enities and append to entry queue
     queue_simulator.initQueue(colors=colorlist, randchoice=expovar, lambd=1.5)
     # start simulation
