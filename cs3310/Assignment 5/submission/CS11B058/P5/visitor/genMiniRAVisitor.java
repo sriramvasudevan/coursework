@@ -15,11 +15,25 @@ import base.SymbolTable;
  */
 public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
     public SymbolTable symtab;
-    boolean            label_print = true; // Flag to mark if a label is to be
+    boolean            label_print = true; // Flag
+                                           // to
+                                           // mark
+                                           // if
+                                           // a
+                                           // label
+                                           // is
+                                           // to
+                                           // be
                                            // printed
     int                stack_ptr   = 0;
     int                paramnos    = 0;
     String             currfunc    = null;
+    // It's always better to be safe than sorry! ;)
+    int                padding     = 3;
+    // Assuming I'll spill at max all 18 regs and all meant-to-be-spilled vars.
+    // Not to forget the padding! Safety first!
+    int                base_arg2;
+    int                curr_arg2;
 
     // save caller regs
     void saveCallerRegs() {
@@ -115,7 +129,15 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         currfunc = "main";
         paramnos = 0;
 
-        System.out.println("MAIN [0][" + 200 + "][" + 200 + "]"); // temp hack
+        // Assuming I'll spill at max all 18 regs and all meant-to-be-spilled
+        // vars.
+        // Not to forget the padding! Safety first!
+        base_arg2 = 18 + symtab.location.size() + padding;
+        curr_arg2 = base_arg2;
+
+        int arg3 = symtab.arg3.get(currfunc) + padding;
+        int arg2 = curr_arg2 + padding; // padding at the top as well!
+        System.out.println("MAIN [0][" + arg2 + "][" + arg3 + "]");
         n.f1.accept(this);
         System.out.println("END");
         n.f3.accept(this);
@@ -142,11 +164,14 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         stack_ptr += Math.max(0, paramnos - 4); // PASSARGS will be available as
                                                 // the first few SPILLEDARGS
                                                 // here
+        curr_arg2 = base_arg2 + Math.max(0, paramnos - 4);
 
         label_print = false;
+        int arg3 = symtab.arg3.get(currfunc) + padding;
+        int arg2 = curr_arg2 + padding; // padding at the top as well!
         System.out.println();
         System.out.println(n.f0.accept(this) + " [" + n.f2.accept(this) + "]["
-                + 200 + "][" + 200 + "]"); // temp hack
+                + arg2 + "][" + arg3 + "]");
         n.f4.accept(this);
         return _ret;
     }
@@ -188,12 +213,16 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         String argval = (String) n.f1.accept(this);
         String arg_reg = symtab.register.get(currfunc + argval);
         if (arg_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + argval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + argval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             arg_reg = "v1";
         }
         String alt_label = symtab.global_label
                 .get(currfunc + n.f2.accept(this));
+        if (alt_label == null) {
+            alt_label = n.f2.f0.toString();
+        }
         System.out.println("\tCJUMP " + arg_reg + " " + alt_label);
         return _ret;
     }
@@ -221,14 +250,16 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         String argval = (String) n.f3.accept(this);
         String arg_reg = symtab.register.get(currfunc + argval);
         if (arg_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + argval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + argval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             arg_reg = "v1";
         }
 
         if (temp_reg == null) { // v0 not modified so no need of ASTORE here
-            System.out.println("\tALOAD v0 SPILLEDARG "
-                    + symtab.location.get(currfunc + tempval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + tempval);
+            System.out.println("\tALOAD v0 SPILLEDARG " + store_loc);
             System.out.println("\tHSTORE v0 " + n.f2.accept(this) + " "
                     + arg_reg);
         }
@@ -251,16 +282,18 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         String argval = (String) n.f2.accept(this);
         String arg_reg = symtab.register.get(currfunc + argval);
         if (arg_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + argval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + argval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             arg_reg = "v1";
         }
 
         if (temp_reg == null) {
             System.out.println("\tHLOAD v1 " + arg_reg + " "
                     + n.f3.accept(this));
-            System.out.println("\tASTORE SPILLEDARG "
-                    + symtab.location.get(currfunc + tempval) + " v1");
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + tempval);
+            System.out.println("\tASTORE SPILLEDARG " + store_loc + " v1");
         }
         else {
             System.out.println("\tHLOAD " + temp_reg + " " + arg_reg + " "
@@ -286,16 +319,18 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
                 exp_reg = symtab.register.get(currfunc + expval);
             }
             if (exp_reg == null) {
-                System.out.println("\tALOAD v1 SPILLEDARG "
-                        + symtab.location.get(currfunc + expval));
+                int store_loc = curr_arg2 - symtab.location.size()
+                        + symtab.location.get(currfunc + expval);
+                System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
                 exp_reg = "v1";
             }
         }
 
         if (temp_reg == null) {
             System.out.println("\tMOVE v1 " + exp_reg);
-            System.out.println("\tASTORE SPILLEDARG "
-                    + symtab.location.get(currfunc + tempval) + " v1");
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + tempval);
+            System.out.println("\tASTORE SPILLEDARG " + store_loc + " v1");
         }
         else {
             System.out.println("\tMOVE " + temp_reg + " " + exp_reg);
@@ -316,8 +351,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             exp_reg = symtab.register.get(currfunc + expval);
         }
         if (exp_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + expval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + expval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             exp_reg = "v1";
         }
         System.out.println("\tPRINT " + exp_reg);
@@ -348,8 +384,8 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             if (arg_reg == null) {
                 Integer loc = symtab.location.get(currfunc + i);
                 if (loc != null) {
-                    System.out.println("\tASTORE SPILLEDARG "
-                            + symtab.location.get(currfunc + i) + " a" + i);
+                    loc += curr_arg2 - symtab.location.size();
+                    System.out.println("\tASTORE SPILLEDARG " + loc + " a" + i);
                 }
                 // else - the temp was never seen in the body ie., it wasn't
                 // used
@@ -363,8 +399,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             String arg_reg = symtab.register.get(currfunc + i);
             if (arg_reg == null) {
                 System.out.println("\tALOAD v1 SPILLEDARG " + (i - 4));
-                System.out.println("\tASTORE SPILLEDARG "
-                        + symtab.location.get(currfunc + i) + " v1");
+                int store_loc = curr_arg2 - symtab.location.size()
+                        + symtab.location.get(currfunc + i);
+                System.out.println("\tASTORE SPILLEDARG " + store_loc + " v1");
             }
             else {
                 System.out.println("\tALOAD " + arg_reg + " SPILLEDARG "
@@ -382,8 +419,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             ret_reg = symtab.register.get(currfunc + ret_reg);
         }
         if (ret_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + retval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + retval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             ret_reg = "v1";
         }
         // Put ret val in v0
@@ -409,8 +447,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             call_reg = symtab.register.get(currfunc + call_reg);
         }
         if (call_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + expval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + expval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             call_reg = "v1";
         }
 
@@ -421,8 +460,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             String tempval = (String) node.accept(this);
             String reg = symtab.register.get(currfunc + tempval);
             if (reg == null) {
-                System.out.println("\tALOAD v1 SPILLEDARG "
-                        + symtab.location.get(currfunc + tempval));
+                int store_loc = curr_arg2 - symtab.location.size()
+                        + symtab.location.get(currfunc + tempval);
+                System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
                 reg = "v1";
             }
             if (argno < 4) {
@@ -430,8 +470,6 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             }
             else {
                 System.out.println("\tPASSARG " + (argno - 3) + " " + reg);
-                // TODO: the arg2 and arg3 of the method, load/store spilled
-                // args at locations in the unused stack region
             }
             argno++;
         }
@@ -456,8 +494,9 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
             arg_reg = symtab.register.get(currfunc + expval);
         }
         if (arg_reg == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + expval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + expval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             arg_reg = "v1";
         }
         System.out.println("\tMOVE v0 HALLOCATE " + arg_reg);
@@ -477,13 +516,15 @@ public class genMiniRAVisitor<R> implements GJNoArguVisitor<R> {
         }
         // Check if they have valid regs assigned
         if (arg_reg1 == null) {
-            System.out.println("\tALOAD v0 SPILLEDARG "
-                    + symtab.location.get(currfunc + tempval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + tempval);
+            System.out.println("\tALOAD v0 SPILLEDARG " + store_loc);
             arg_reg1 = "v0";
         }
         if (arg_reg2 == null) {
-            System.out.println("\tALOAD v1 SPILLEDARG "
-                    + symtab.location.get(currfunc + expval));
+            int store_loc = curr_arg2 - symtab.location.size()
+                    + symtab.location.get(currfunc + expval);
+            System.out.println("\tALOAD v1 SPILLEDARG " + store_loc);
             arg_reg2 = "v1";
         }
         System.out.println("\tMOVE v0 " + n.f0.accept(this) + " " + arg_reg1

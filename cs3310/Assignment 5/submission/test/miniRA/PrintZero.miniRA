@@ -1,4 +1,4 @@
-MAIN [0][200][200]
+MAIN [0][24][3]
 	MOVE s0 0
 	PRINT s0
 END

@@ -5,9 +5,6 @@ import java.util.ArrayList;
 public class CFNode {
 
     public ArrayList<CFNode> successors = new ArrayList<CFNode>();
-    public String            op;                                  // for
-                                                                   // debugging.
-                                                                   // delete
     public Integer           no;
     public ArrayList<String> in         = new ArrayList<String>();
     public ArrayList<String> out        = new ArrayList<String>();

@@ -13,7 +13,8 @@ public class makeMiniRA {
     public static void main(String[] args) throws FileNotFoundException {
         try {
             Node root = new microIRParser(new FileInputStream(
-                    "test/microIR/Test.microIR")).Goal();
+                    "submission/test/microIR/lastyrTest40VarsAllLive.microIR"))
+                    .Goal();
             // Node root = new microIRParser(System.in).Goal();
 
             genCFG cfg_visitor = new genCFG();

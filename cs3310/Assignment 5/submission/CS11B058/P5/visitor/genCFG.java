@@ -25,8 +25,7 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     int                     label_count = 0;
     String                  label       = null;
     String                  currfunc    = null;
-    Integer                 count       = 0;                            // for
-                                                                         // debugging
+    Integer                 count       = 0;
 
     // Function to add missing edges in the CFG
     void addJumpEdges() {
@@ -51,9 +50,8 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         prevnode = currnode;
     }
 
-    // for debugging
+    // Prints the Control Flow Graph generated
     void printCFG() {
-        // not done - first nodes? All have preds currently.
         ArrayList<CFNode> dp = new ArrayList<CFNode>();
         ArrayList<CFNode> visited = new ArrayList<CFNode>();
         for (CFNode root : rootlist) {
@@ -63,7 +61,7 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
                 CFNode temp = dp.remove(0);
                 if (!visited.contains(temp)) {
                     visited.add(temp);
-                    System.out.println(temp.op);
+                    System.out.println(temp.no);
                     System.out.println(temp.in);
                     System.out.println(temp.out);
                     System.out.println(temp.use);
@@ -140,6 +138,7 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         prevnode = null;
         rootnode = null;
         currfunc = "main";
+        symtab.arg3.put(currfunc, 0);
 
         n.f0.accept(this);
         n.f1.accept(this);
@@ -151,7 +150,7 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
 
         addJumpEdges();
         symtab.allocRegs(rootlist);
-        //printCFG(); // debugging
+        // printCFG(); // for debugging
 
         return _ret;
     }
@@ -174,6 +173,7 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         prevnode = null;
         rootnode = null;
         currfunc = n.f0.f0.toString();
+        symtab.arg3.put(currfunc, 0);
 
         n.f0.accept(this);
         n.f1.accept(this);
@@ -201,7 +201,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(NoOpStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "noop" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -219,7 +218,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(ErrorStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "error" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -238,7 +236,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         R _ret = null;
         jumplabel = false;
         currnode = new CFNode();
-        currnode.op = "cjump" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -260,7 +257,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         R _ret = null;
         jumplabel = false;
         currnode = new CFNode();
-        currnode.op = "jump" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -281,7 +277,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(HStoreStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "hstore" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -302,7 +297,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(HLoadStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "hload" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -323,7 +317,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(MoveStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "move" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -346,7 +339,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
     public R visit(PrintStmt n) {
         R _ret = null;
         currnode = new CFNode();
-        currnode.op = "print" + count.toString();
         currnode.no = count;
         count++;
         if (label != null) {
@@ -381,7 +373,6 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
         n.f1.accept(this);
         n.f2.accept(this);
         currnode = new CFNode();
-        currnode.op = "return" + count.toString();
         currnode.no = count;
         count++;
         String expval = (String) n.f3.accept(this);
@@ -404,6 +395,8 @@ public class genCFG<R> implements GJNoArguVisitor<R> {
             currnode.use.add(currfunc + expval);
         }
         n.f2.accept(this);
+        Integer curr_arg3 = symtab.arg3.get(currfunc);
+        symtab.arg3.put(currfunc, Math.max(curr_arg3, n.f3.nodes.size()));
         for (Node node : n.f3.nodes) {
             currnode.use.add(currfunc + node.accept(this));
         }

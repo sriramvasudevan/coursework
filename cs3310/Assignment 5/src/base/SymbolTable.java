@@ -17,14 +17,16 @@ public class SymbolTable {
     ArrayList<String>                                free_regs    = new ArrayList<String>();
     public HashMap<String, Integer>                  location     = new HashMap<String, Integer>();
     public HashMap<String, String>                   global_label = new HashMap<String, String>();
+    public HashMap<String, Integer>                  arg3         = new HashMap<String, Integer>();
     int                                              stack_ptr    = 0;
     int                                              reg_nos      = 0;
 
     public void allocRegs(ArrayList<CFNode> rootlist) {
         analyzeLiveness(rootlist);
         genLiveRanges(rootlist);
-        // printLiveRanges(); // debugging
+        // printLiveRanges(); // for debugging
         linearScanRegisterAllocation();
+        // printRegMapping(); // for debugging
     }
 
     // Find union of two sets
@@ -63,6 +65,9 @@ public class SymbolTable {
                 if (!visited.contains(temp)) {
                     visited.add(temp);
                     for (CFNode node : temp.successors) {
+                        if (node == null) {
+                            continue;
+                        }
                         queue.add(node);
                     }
 
@@ -107,6 +112,9 @@ public class SymbolTable {
                     if (!visited.contains(temp)) {
                         visited.add(temp);
                         for (CFNode node : temp.successors) {
+                            if (node == null) {
+                                continue;
+                            }
                             queue.add(node);
                         }
 
@@ -117,6 +125,9 @@ public class SymbolTable {
                                 getDiff(temp.out, temp.def));
                         ArrayList<String> temp_out = new ArrayList<String>();
                         for (CFNode s : temp.successors) {
+                            if (s == null) {
+                                continue;
+                            }
                             temp_out = getUnion(temp_out, s.in);
                         }
                         temp.out = temp_out;
@@ -139,6 +150,9 @@ public class SymbolTable {
                 if (!visited.contains(temp)) {
                     visited.add(temp);
                     for (CFNode node : temp.successors) {
+                        if (node == null) {
+                            continue;
+                        }
                         queue.add(node);
                     }
 
@@ -259,9 +273,6 @@ public class SymbolTable {
                                 });
             }
         }
-
-        // debugging
-        // printRegMapping();
     }
 
     void expireOldIntervals(Map.Entry<String, ArrayList<Integer>> i) {
@@ -281,6 +292,7 @@ public class SymbolTable {
                 .get(active.size() - 1);
         if (spill.getValue().get(1) > i.getValue().get(1)) {
             register.put(i.getKey(), register.get(spill.getKey()));
+            register.remove(spill.getKey());
             location.put(spill.getKey(), stack_ptr++);
             active.remove(active.size() - 1); // fastest way to remove spill
             active.add(i);
