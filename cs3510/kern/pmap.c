@@ -318,10 +318,17 @@ page_init(void)
 
 	// 2) The rest of base memory, [PGSIZE, npages_basemem * PGSIZE)
 	//     is free
+	size_t mpentry_pgindex = PGNUM(MPENTRY_PADDR);
     for (; i < npages_basemem; i++) {
-		pages[i].pp_ref = 0;
-		pages[i].pp_link = page_free_list;
-		page_free_list = &pages[i];
+		if (i == mpentry_pgindex) {
+            pages[i].pp_ref = 1;
+            pages[i].pp_link = NULL;
+        }
+        else {
+            pages[i].pp_ref = 0;
+            pages[i].pp_link = page_free_list;
+            page_free_list = &pages[i];
+        }
 	}
 
     // 3) Then comes the IO hole [IOPHYSMEM, EXTPHYSMEM), which must
@@ -708,7 +715,19 @@ mmio_map_region(physaddr_t pa, size_t size)
 	// Hint: The staff solution uses boot_map_region.
 	//
 	// Your code here:
-	panic("mmio_map_region not implemented");
+
+    size = ROUNDUP(size, PGSIZE);
+
+    if ((base+size) > MMIOLIM) {
+            panic("mmio allocation exceeds MMIOLIM\n");
+    }
+
+    boot_map_region(kern_pgdir, base, size, pa, PTE_PCD|PTE_PWT|PTE_W);
+    
+    uintptr_t prev_base = base;
+    base += size;
+
+    return (void*)prev_base;
 }
 
 static uintptr_t user_mem_check_addr;
