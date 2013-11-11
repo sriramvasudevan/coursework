@@ -1,0 +1,263 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\usepackage[margin=0.8in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 4 - Part B: Copy-on-Write Fork},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Lab 4 - Part B: Copy-on-Write Fork}
+\author{Sriram V - CS11B058}
+\date{}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise 8}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Implemented \texttt{sys\_env\_set\_pgfault\_upcall()} in
+  \texttt{kern/syscall.c}.
+\item
+  User environments register a page fault handler entrypoint with the
+  JOS kernel using this system call.
+\item
+  The information is stored in \texttt{env\_pgfault\_upcall} fo the
+  \texttt{Env} structure.
+\item
+  The system call takes the Environment ID and the handler as its
+  arguments.
+\item
+  We assert that the handler \texttt{func} is not \texttt{NULL}, and
+  access the relevant \texttt{Env} structure associated with
+  \texttt{envid} using the \texttt{envid2env()} function defined in
+  \texttt{kern/env.c}.
+\item
+  \texttt{checkperm} is set to \texttt{1} above, as it is a `dangerous'
+  system call.
+\item
+  If no such environment exists, we return \texttt{-E\_BAD\_ENV}
+\item
+  Else, we set the \texttt{env\_pgfault\_upcall} variable of this
+  environment as \texttt{func}.
+\item
+  The function returns \texttt{0} on success.
+\end{itemize}
+
+\subsection{Exercise 9}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Here, \texttt{page\_fault\_handler()} in \texttt{kern/trap.c} is
+  modified to handle page faults from the user mode.
+\item
+  Since the function is required to dispatch page faults to the
+  user-mode handler, we check if \texttt{pgfault\_upcall} exists for
+  \texttt{curenv}. We also check if the environment's stack pointer
+  (stored in \texttt{tf-\textgreater{}tf\_esp}) is within the stack
+  limits. Else, we destroy the enironment.
+\item
+  If the \texttt{esp} value is between the range
+  \texttt{UXSTACKTOP-PGSIZE} and \texttt{UXSTACKTOP-1} inclusive, then
+  the page fault handler itself has faulted. In such a case, a 32-bit
+  empty word is pushed, and then a \texttt{struct UTrapframe}.
+\item
+  Otherwise the \texttt{struct UTrapframe} is directly pushed onto the
+  stack.
+\item
+  The \texttt{UTrapframe} ovject's variables are all set to the current
+  \texttt{tf}'s values.
+\item
+  Then \texttt{tf}'s \texttt{eip} is set to \texttt{curenv}'s
+  \texttt{env\_pgfault\_upcall}, so that the call to \texttt{env\_run()}
+  will start from that point.
+\item
+  The \texttt{esp} value of \texttt{tf} is now updated to point to the
+  beginning of the \texttt{UTrapframe} object, as it is the topmost on
+  the stack.
+\item
+  \texttt{env\_run()} is then called on \texttt{curenv}.
+\end{itemize}
+
+\subsection{Exercise 10}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The \texttt{\_pgfault\_upcall} routine in \texttt{lib/pfentry.S} is
+  wgere the kernel redirects control whenever a page fault is caused in
+  user space.
+\item
+  The stack pointer \texttt{esp} currently points to the exception
+  stack, which we temporarily save in \texttt{eax}.
+\item
+  The \texttt{eip} value (where we have to return to) is loaded into
+  \texttt{ebx}.
+\item
+  We then switch to the trap-time stack (\texttt{utf\_esp}), and push
+  the return address (now in \texttt{ebx}) onto the top of this stack.
+\item
+  The trap-time stack pointer is also updated in the exception stack,
+  since a new value has been pushed onto it.
+\item
+  We now switch back to the exception stack, skip the fault address and
+  the error, and restore all the trap-time registers
+  (\texttt{utf\_regs}).
+\item
+  The return address is skipped over, and the \texttt{eflags} are also
+  restored.
+\item
+  The top of the exception stack now points to the trap-time stack
+  pointer. The value is popped into \texttt{esp} to switch to it.
+\item
+  \texttt{ret} is called to return to the address on the top of the
+  trap-time stack, which is the \texttt{eip} value we pushed at the
+  start of this code segment.
+\item
+  Thus, this code successfully restores the state at which the fault
+  occured, and re-runs the code that caused the fault.
+\end{itemize}
+
+\subsection{Exercise 11}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The \texttt{set\_pgfault\_handler()} method in \texttt{lib/pgfault.c}
+  is how the system call to register the page fault handler with the JOS
+  kernel is implemented.
+\item
+  If \texttt{\_pgfault\_handler} is \texttt{0}, it is the first time a
+  handler is being registered. In such a case, we need to allocate an
+  exception stack of size \texttt{PGSIZE} at \texttt{UXSTACKTOP}, and
+  also tell the kernel to call the \texttt{\_pgfault\_upcall} routine
+  (implemented in the previous exercise) whenever a page fault occurs.
+\item
+  This is done using the system calls \texttt{sys\_page\_alloc()} and
+  \texttt{sys\_env\_set\_pgfault\_upcall()} respectively.
+\item
+  The variable \texttt{\_pgfault\_handler} is then set to the
+  \texttt{handler} that was passed, so that the assembly routine can
+  call it when needed.
+\end{itemize}
+
+\subsection{Exercise 12}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{\texttt{fork()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Until now, a \texttt{fork()} resulted in all the pages being copied
+    from the parent to the child environment, but this causes a slowdown
+    and also may not necessarily be used always, as an \texttt{exec()}
+    may be called which replaces the child environment's address space.
+  \item
+    Hence, the new implementation of \texttt{fork()} copies page
+    mappings instead of pages.
+  \item
+    A separate copy is created only when either environment modifies the
+    pages -- this is called copy-on-write.
+  \item
+    First, \texttt{pgfault()} is set as the page fault handler for
+    \texttt{fork()}.
+  \item
+    Then a new environment is spawned using \texttt{sys\_exofork()}.
+  \item
+    The pages of the old environment are iterated over, and the pages
+    are duplicated into the new environment by calling
+    \texttt{duppage()}, apart from the last page.
+  \item
+    The final page (just below \texttt{UXSTACKTOP}) is allocated for the
+    exception stack, and the \texttt{pgfault\_upcall} values are also
+    copied.
+  \item
+    Finally, the new environment is set to \texttt{ENV\_RUNNABLE} and
+    its ID is returned.
+  \end{itemize}
+\item
+  \textbf{\texttt{pgfault()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This function is the page fault handler for the \texttt{fork()}
+    process.
+  \item
+    We check that the fault is a write (\texttt{FEC\_WR}) and that the
+    page is marked as \texttt{PTE\_COW}.
+  \item
+    A new page is then allocated at \texttt{PFTEMP}, and the contents of
+    the old faulting page at \texttt{addr} are copied into this page.
+  \item
+    Finally the new page is mapped with read/write permissions at the
+    old address, in place of the old read-only mapping.
+  \end{itemize}
+\item
+  \textbf{\texttt{duppage()}}:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    First, a check is performed to see if the page is writable or
+    copy-on-write.
+  \item
+    If it is, the page to be duplicated (present in the current
+    environment \texttt{0}'s address space) is mapped to the same
+    virtual address, but in \texttt{envid}'s address space, and with the
+    User, Present and COW bits set.
+  \item
+    Next, the permissions of duplicated page are also changed to
+    copy-on-write.
+  \item
+    To do this, the page at \texttt{va} in \texttt{0}'s address space is
+    mapped to the same address in the same environment, but with the
+    appropriate permission bits set.
+  \item
+    Finally, on success of this entire procedure, \texttt{0} is
+    returned.
+  \end{itemize}
+\end{enumerate}
+
+\end{document}

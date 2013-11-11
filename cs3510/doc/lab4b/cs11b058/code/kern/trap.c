@@ -1,3 +1,6 @@
+// Sriram V
+// CS11B058
+
 #include <inc/mmu.h>
 #include <inc/x86.h>
 #include <inc/assert.h>
@@ -75,7 +78,7 @@ trap_init(void)
 	// LAB 3: Your code here.
 
 	int i = 0;
-	for ( ; i < 52; i++) {
+	for ( ; i < 49; i++) {
 		SETGATE(idt[i], 0, GD_KT, thandlers[i], 0);
 	}
 
@@ -236,11 +239,6 @@ trap_dispatch(struct Trapframe *tf)
                                     tf->tf_regs.reg_ebx,
                                     tf->tf_regs.reg_edi,
                                     tf->tf_regs.reg_esi);
-            break;
-
-        case (IRQ_OFFSET + IRQ_TIMER):
-            lapic_eoi();
-            sched_yield();
             break;
 
         default:

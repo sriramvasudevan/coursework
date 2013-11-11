@@ -1,0 +1,246 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\usepackage[margin=0.8in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 4 - Part C: Preemptive Multitasking and Inter-Process Communication (IPC)},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Lab 4 - Part C: Preemptive Multitasking and Inter-Process Communication
+       (IPC)}
+\author{Sriram V - CS11B058}
+\date{}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise 13}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Since I had implemented the Challenge question in lab 3, inserting IDT
+  entries was trivial. I had to simply increase the number of iterations
+  to \texttt{52} for the for loop in \texttt{trap\_init()} in
+  \texttt{kern/trap.c}.
+\item
+  The corresponding \texttt{TRAPHANDLER\_NOEC()} macros are also used in
+  \texttt{kern/trapentry.s}.
+\item
+  To ensure that user environments always run with interrupts enabled,
+  we add the \texttt{FL\_IF} flag to the environment's \texttt{EFLAGS}.
+\item
+  This is done by using
+  \texttt{e-\textgreater{}env\_tf.tf\_eflags \textbar{}= FL\_IF;}.
+\item
+  Now if we run any program that runs for a non-trivial length of time
+  (such as \texttt{spin}), we see that the kernel is able to preempt the
+  running environment, but prints the trap frames for the hardware
+  interrupts as it is not yet handling them.
+\end{itemize}
+
+\subsection{Exercise 14}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Here, the \texttt{trap\_dispatch()} function in \texttt{kern/trap.c}
+  is modified to handle the timer's hardware interrupt.
+\item
+  We add in a case for the corresponding \texttt{trapno}, which would be
+  handle the case for the IDT entry corresponding to the timer IRQ.
+\item
+  The mapping from IRQ number to IDT entry is not fixed.
+  \texttt{pic\_init} maps IRQs 0-15 to IDT entries \texttt{IRQ\_OFFSET}
+  to \texttt{IRQ\_OFFSET+15}.
+\item
+  Hence, the value we equate \texttt{trapno} to, to check for the timer
+  hardware interrupt is \texttt{IRQ\_OFFSET + IRQ\_TIMER}, as this is
+  the corresponding IDT entry.
+\item
+  If the \texttt{trapno} value is indeed equal to this case, we call
+  \texttt{lapi\_eoi()} to acknowledge the interrupt, and then call the
+  scheduler using \texttt{sched\_yield()}.
+\item
+  The \texttt{user/spin} test now works. This is because when the child
+  environment running \texttt{spin} loops indefinitely, the kernel
+  preempts this environment and allocates the system resources to the
+  next environment in line.
+\item
+  Thus we see that the parent environment forks off the child,
+  \texttt{sys\_yield()}s to it a couple of times, but in each case
+  regains control of the CPU after one time slice, and finally kills the
+  child environment and terminates gracefully.
+\end{itemize}
+
+\subsection{Exercise 15}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{\texttt{sys\_ipc\_recv()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    If \texttt{dstva} is less than \texttt{UTOP}, it means that the
+    environment is willing to receive a page of data. In such a case, we
+    check if \texttt{dstva} must be page-aligned, or else we throw an
+    error.
+  \item
+    If it is page-aligned, \texttt{curenv}'s \texttt{env\_ipc\_dstva} is
+    set to \texttt{dstva}, \texttt{env\_ipc\_recving} is set to
+    \texttt{1} and \texttt{env\_status} is set to
+    \texttt{ENV\_NOT\_RUNNABLE}, before returning a \texttt{0}.
+  \item
+    This is done to indicate to other environments that this environment
+    wants to receive data.
+  \end{itemize}
+\item
+  \textbf{\texttt{sys\_ipc\_try\_send()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Here we first check if the environment associated with the passed
+    \texttt{envid} exists using \texttt{envid2env()}, and return an
+    error if no such environment exists.
+  \item
+    \texttt{checkperm} is set to \texttt{0} above, since we don't need
+    to check permissions.
+  \item
+    \texttt{-E\_IPC\_NOT\_RECV} error is thrown if the \texttt{envid} is
+    not blocked is \texttt{sys\_ipc\_recv()}, or another environment has
+    managed to send first.
+  \item
+    If \texttt{srcva} is less than \texttt{UTOP}, it means that the
+    sender wants to send a page. Also, since the check above has alos
+    been passed, it means that \texttt{envid} is willing to receive.
+  \item
+    If it is not less than \texttt{UTOP}, a page won't be transferred
+    and hence \texttt{env\_ipc\_perm} is set to \texttt{0}.
+  \item
+    However, if it is lesser, we check that \texttt{srcva} is pafe
+    aligned and that it has the relevant permssions of being present and
+    a user page etc.
+  \item
+    The page is found by using \texttt{page\_lookup()} at
+    \texttt{srcva}, and if the page exists and both the page and its
+    page table entry are writable, we proceed forward. Else, we throw an
+    error.
+  \item
+    Since all checks have been passed, we finally insert the page at the
+    relevant \texttt{dstva} address in the receiver's address space.
+  \item
+    \texttt{env\_ipc\_recving} is set to \texttt{0} since the message
+    has been sent.
+  \item
+    Other variables such as \texttt{env\_ipc\_from} (environment that
+    sent) and \texttt{env\_ipc\_value} (value that was sent) are also
+    set.
+  \item
+    Finally the receiver is made runnable and the functions returns
+    \texttt{0} (success).
+  \end{itemize}
+\item
+  \textbf{\texttt{ipc\_recv()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This is a library function implemented in \texttt{lib/ipc.c}, so
+    that C programs can call this function to make the system call to
+    receive a message.
+  \item
+    \texttt{from\_env\_store} stores the sender's \texttt{envid}, and
+    \texttt{perm\_store}, the permissions of the page sent.
+  \item
+    We set both these values in this function (copying
+    \texttt{env\_ipc\_from} and \texttt{env\_ipc\_perm} into them) if
+    the corresponding arguments are non-null.
+  \item
+    We also make use of the error returned by the system call
+    \texttt{sys\_ipc\_recv()} here. If there is an error, the two
+    \texttt{\_store} variables are set to \texttt{0} before returning
+    the error.
+  \item
+    If there are no errors, \texttt{ipc\_recv()} returns the value it
+    receives, which is stored in \texttt{env\_ipc\_value} of
+    \texttt{thisenv}.
+  \end{itemize}
+\item
+  \textbf{\texttt{ipc\_send()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This is a library function implemented in \texttt{lib/ipc.c}, so
+    that C programs can call this function to make the system call to
+    send a message.
+  \item
+    First we check if a page is to be sent, by checking if it is
+    non-null. If it is \texttt{NULL}, it means that only the value is to
+    be sent, so \texttt{pg} is set to \texttt{UTOP} to indicate to
+    \texttt{ipc\_recv()} that no page is being sent.
+  \item
+    Next, we try to send the passed \texttt{pg} (with permissions
+    \texttt{perm}) and \texttt{value} to the environment (with
+    \texttt{envid} equal to \texttt{to\_env}).
+  \item
+    If the results is the error \texttt{-E\_IPC\_NOT\_RECV}, it means
+    that \texttt{to\_env} does not wish to receive a message. Hence, the
+    message isn't sent from \texttt{curenv} to \texttt{to\_env}, and we
+    do a \texttt{sys\_yield()} to relinquish this environment's control
+    over the CPU.
+  \item
+    Thus everytime control comes back to the current environment, the
+    check is performed again and again till \texttt{to\_env} is in a
+    state where it is willing to receive, in which case the result is
+    \texttt{0} (success), and we exit out of the while loop.
+  \item
+    In case of any other error, the \texttt{while} condition is false,
+    but the result in non-zero, so the kernel panics.
+  \item
+    Both \texttt{user/pingpong} and \texttt{user/primes} work
+    successfully now.
+  \item
+    \texttt{make grade} successfully gives \texttt{75/75}.
+  \end{itemize}
+\end{enumerate}
+
+\end{document}
