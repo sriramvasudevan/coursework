@@ -4,3 +4,6 @@
 [submodule "cs6380/ultimate-tic-tac-toe"]
 	path = cs6380/ultimate-tic-tac-toe
 	url = git@github.com:sriramvasudevan/ultimate-tic-tac-toe.git
+[submodule "cs3700/space-database-app"]
+	path = cs3700/space-database-app
+	url = git@github.com:sriramvasudevan/space-database-app.git
