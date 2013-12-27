@@ -67,7 +67,7 @@ main:
 Create_Element:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -145,8 +145,8 @@ Create_Element:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -154,7 +154,7 @@ Create_Element:
 Element_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -191,8 +191,8 @@ Element_Init:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -200,7 +200,7 @@ Element_Init:
 Element_GetAge:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -224,8 +224,8 @@ Element_GetAge:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -233,7 +233,7 @@ Element_GetAge:
 Element_GetSalary:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -257,8 +257,8 @@ Element_GetSalary:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -266,7 +266,7 @@ Element_GetSalary:
 Element_GetMarried:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -290,8 +290,8 @@ Element_GetMarried:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -299,7 +299,7 @@ Element_GetMarried:
 Element_Equal:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 112
+	subu $sp, $sp, 512
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -576,8 +576,8 @@ L16:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 104($sp)
-	addu $sp, $sp, 112
+	lw $fp, 504($sp)
+	addu $sp, $sp, 512
 	j $ra
 
 	.text
@@ -585,7 +585,7 @@ L16:
 Element_Compare:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -645,8 +645,8 @@ L20:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -654,7 +654,7 @@ L20:
 Create_List:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -744,8 +744,8 @@ Create_List:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -753,7 +753,7 @@ Create_List:
 List_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -779,8 +779,8 @@ List_Init:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -788,7 +788,7 @@ List_Init:
 List_InitNew:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -825,8 +825,8 @@ List_InitNew:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -834,7 +834,7 @@ List_InitNew:
 List_Insert:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 116
+	subu $sp, $sp, 516
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -923,8 +923,8 @@ List_Insert:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 108($sp)
-	addu $sp, $sp, 116
+	lw $fp, 508($sp)
+	addu $sp, $sp, 516
 	j $ra
 
 	.text
@@ -932,7 +932,7 @@ List_Insert:
 List_SetNext:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -959,8 +959,8 @@ List_SetNext:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -968,7 +968,7 @@ List_SetNext:
 List_Delete:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1302,8 +1302,8 @@ L40:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
 
 	.text
@@ -1311,7 +1311,7 @@ L40:
 List_Search:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1491,8 +1491,8 @@ L44:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
 
 	.text
@@ -1500,7 +1500,7 @@ L44:
 List_GetEnd:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1524,8 +1524,8 @@ List_GetEnd:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -1533,7 +1533,7 @@ List_GetEnd:
 List_GetElem:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1557,8 +1557,8 @@ List_GetElem:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -1566,7 +1566,7 @@ List_GetElem:
 List_GetNext:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1590,8 +1590,8 @@ List_GetNext:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -1599,7 +1599,7 @@ List_GetNext:
 List_Print:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1765,8 +1765,8 @@ L46:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -1774,7 +1774,7 @@ L46:
 Create_LL:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1810,8 +1810,8 @@ Create_LL:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -1819,7 +1819,7 @@ Create_LL:
 LL_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 116
+	subu $sp, $sp, 516
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -2759,9 +2759,10 @@ LL_Start:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 108($sp)
-	addu $sp, $sp, 116
+	lw $fp, 508($sp)
+	addu $sp, $sp, 516
 	j $ra
+
 
 	.text
 	.globl _halloc

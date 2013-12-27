@@ -54,7 +54,7 @@ main:
 Finder_Find:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 196
+	subu $sp, $sp, 596
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -2381,9 +2381,10 @@ Finder_Find:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 188($sp)
-	addu $sp, $sp, 196
+	lw $fp, 588($sp)
+	addu $sp, $sp, 596
 	j $ra
+
 
 	.text
 	.globl _halloc

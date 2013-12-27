@@ -70,7 +70,7 @@ main:
 Create_somename:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -106,8 +106,8 @@ Create_somename:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -115,7 +115,7 @@ Create_somename:
 somename_init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -144,9 +144,10 @@ somename_init:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
+
 
 	.text
 	.globl _halloc

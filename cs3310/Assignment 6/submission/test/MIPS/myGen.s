@@ -16,7 +16,7 @@ main:
 Create_A:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -52,8 +52,8 @@ Create_A:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -61,7 +61,7 @@ Create_A:
 A_foo:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -129,8 +129,8 @@ L2:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -138,7 +138,7 @@ L2:
 Create_B:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -192,8 +192,8 @@ Create_B:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -201,7 +201,7 @@ Create_B:
 B_foo:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -254,8 +254,8 @@ B_foo:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -263,7 +263,7 @@ B_foo:
 Create_C:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -311,8 +311,8 @@ Create_C:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -320,7 +320,7 @@ Create_C:
 C_foo0:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -344,8 +344,8 @@ C_foo0:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -353,7 +353,7 @@ C_foo0:
 C_foo:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -421,9 +421,10 @@ L7:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
+
 
 	.text
 	.globl _halloc

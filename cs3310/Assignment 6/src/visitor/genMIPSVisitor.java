@@ -13,11 +13,15 @@ import java.util.*;
  */
 public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     // Global vars
-    int     arg1             = 0;
-    boolean label_print      = true;
-    String  binopval         = null;
-    int     astore_baseval   = 0;
-    int     passargs_baseval = 0;
+    int                      arg1                = 0;
+    boolean                  label_print         = true;
+    String                   binopval            = null;
+    int                      astore_baseval      = 0;
+    int                      passargs_baseval    = 0;
+    int                      passargs_saved_base = 0;
+    int                      astore_saved_base   = 0;
+    // To take care of cjumps whose labels don't exist.
+    HashMap<String, Integer> label_list          = new HashMap<String, Integer>();
 
     //
     // Auto class visitors--probably don't need to be overridden.
@@ -103,6 +107,13 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
         n.f13.accept(this);
         n.f14.accept(this);
 
+        System.out.println();
+        for (String label : label_list.keySet()) {
+            if (label_list.get(label) == 0) {
+                // It hasn't been matched and has been spotted at a jump/cjump.
+                System.out.println(label + ": nop");
+            }
+        }
         return _ret;
     }
 
@@ -130,7 +141,7 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
 
         int stksize = Integer.parseInt((String) n.f8.accept(this));
         stksize = Math.max(0, stksize - 4); // arg3
-        stksize += Integer.parseInt((String) n.f5.accept(this)); // arg2
+        stksize += Integer.parseInt((String) n.f5.accept(this)) + 100; // arg2
         stksize += 2; // for fp store and ret add
         stksize *= 4;
         int temp = stksize - 8;
@@ -191,8 +202,21 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(CJumpStmt n) {
         R _ret = null;
         label_print = false;
-        System.out.println("\tbeqz " + n.f1.accept(this) + " "
-                + n.f2.accept(this));
+
+        System.out.print("\tbeqz " + n.f1.accept(this) + " ");
+        String label = (String) n.f2.accept(this);
+        System.out.println(label);
+        Integer status = label_list.get(label);
+        if (status != null) {
+            if (status == 0 || status == -1) {
+                // first time the match has been found
+                label_list.put(label, 1);
+            }
+        }
+        else {
+            // new label
+            label_list.put(label, 0);
+        }
         return _ret;
     }
 
@@ -202,7 +226,19 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(JumpStmt n) {
         R _ret = null;
         label_print = false;
-        System.out.println("\tb " + n.f1.accept(this));
+        String label = (String) n.f1.accept(this);
+        System.out.println("\tb " + label);
+        Integer status = label_list.get(label);
+        if (status != null) {
+            if (status == 0 || status == -1) {
+                // first time the match has been found
+                label_list.put(label, 1);
+            }
+        }
+        else {
+            // new label
+            label_list.put(label, 0);
+        }
         return _ret;
     }
 
@@ -281,13 +317,17 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(ALoadStmt n) {
         R _ret = null;
         int spillval = Integer.parseInt((String) n.f2.accept(this));
-        int temp = spillval * 4;
-        System.out.print("\tlw " + n.f1.accept(this) + ", " + temp);
         if (spillval >= arg1) {
+            int temp = spillval * 4 + astore_saved_base;
+            System.out.print("\tlw " + n.f1.accept(this) + ", " + temp);
             System.out.println("($sp)");
+            passargs_baseval = Math.max(passargs_baseval, temp + 4);
         }
         else {
+            int temp = spillval * 4 + passargs_saved_base;
+            System.out.print("\tlw " + n.f1.accept(this) + ", " + temp);
             System.out.println("($fp)");
+            astore_baseval = Math.max(astore_baseval, temp + 4);
         }
         return _ret;
     }
@@ -298,9 +338,10 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(AStoreStmt n) {
         R _ret = null;
         int spillval = Integer.parseInt((String) n.f1.accept(this));
-        int temp = (spillval + astore_baseval) * 4;
+        int temp = spillval * 4 + astore_baseval;
         System.out.println("\tsw " + n.f2.accept(this) + ", " + temp + "($sp)");
-        passargs_baseval++;
+        passargs_baseval = Math.max(passargs_baseval, temp + 4);
+        astore_saved_base = astore_baseval;
         return _ret;
     }
 
@@ -310,9 +351,10 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
     public R visit(PassArgStmt n) {
         R _ret = null;
         int stkpos = Integer.parseInt((String) n.f1.accept(this));
-        int temp = (stkpos - 1 + passargs_baseval) * 4;
+        int temp = (stkpos - 1) * 4 + passargs_baseval;
         System.out.println("\tsw " + n.f2.accept(this) + ", " + temp + "($sp)");
-        astore_baseval++;
+        astore_baseval = Math.max(astore_baseval, temp + 4);
+        passargs_saved_base = passargs_baseval;
         return _ret;
     }
 
@@ -431,6 +473,18 @@ public class genMIPSVisitor<R> implements GJNoArguVisitor<R> {
         R _ret = null;
         if (label_print) {
             System.out.println(n.f0.toString() + ":");
+            String label = n.f0.toString();
+            Integer status = label_list.get(label);
+            if (status != null) {
+                if (status == 0) {
+                    // first time the match has been found
+                    label_list.put(label, 1);
+                }
+            }
+            else {
+                // new label, spotted first not at a jump/cjump.
+                label_list.put(label, -1);
+            }
         }
         label_print = true;
         return (R) n.f0.toString();

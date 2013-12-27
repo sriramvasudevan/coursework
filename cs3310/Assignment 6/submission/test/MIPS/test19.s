@@ -92,7 +92,7 @@ main:
 Create_A22:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -146,8 +146,8 @@ Create_A22:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -155,7 +155,7 @@ Create_A22:
 A22_getI1:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -183,8 +183,8 @@ A22_getI1:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -192,7 +192,7 @@ A22_getI1:
 Create_B22:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -249,8 +249,8 @@ Create_B22:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -258,7 +258,7 @@ Create_B22:
 B22_go:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -312,8 +312,8 @@ B22_go:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
 
 	.text
@@ -321,7 +321,7 @@ B22_go:
 B22_getI1:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -361,9 +361,10 @@ L6:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
+
 
 	.text
 	.globl _halloc

@@ -70,7 +70,7 @@ main:
 Create_Fac:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -127,8 +127,8 @@ Create_Fac:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -136,7 +136,7 @@ Create_Fac:
 Fac_ComputeFac:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -220,8 +220,8 @@ L4:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
 
 	.text
@@ -229,7 +229,7 @@ L4:
 Fac_testFac:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -264,9 +264,10 @@ Fac_testFac:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
+
 
 	.text
 	.globl _halloc

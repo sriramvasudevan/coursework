@@ -70,7 +70,7 @@ main:
 Create_A24:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -145,8 +145,8 @@ Create_A24:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -154,7 +154,7 @@ Create_A24:
 A24_m1:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -351,8 +351,8 @@ L8:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
 
 	.text
@@ -360,7 +360,7 @@ L8:
 A24_m2:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -381,8 +381,8 @@ A24_m2:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -390,7 +390,7 @@ A24_m2:
 Create_B24:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -465,8 +465,8 @@ Create_B24:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -474,7 +474,7 @@ Create_B24:
 B24_m2:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -541,8 +541,8 @@ L13:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -550,7 +550,7 @@ L13:
 B24_m1:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 108
+	subu $sp, $sp, 508
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -747,9 +747,10 @@ L19:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 100($sp)
-	addu $sp, $sp, 108
+	lw $fp, 500($sp)
+	addu $sp, $sp, 508
 	j $ra
+
 
 	.text
 	.globl _halloc

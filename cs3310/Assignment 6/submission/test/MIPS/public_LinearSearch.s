@@ -51,7 +51,7 @@ L1:
 LS_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -118,8 +118,8 @@ LS_Start:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -127,7 +127,7 @@ LS_Start:
 LS_Print:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -166,8 +166,8 @@ L3:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -175,7 +175,7 @@ L3:
 LS_Search:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -236,8 +236,8 @@ L6:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -245,7 +245,7 @@ L6:
 LS_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -327,9 +327,10 @@ L15:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
+
 
 	.text
 	.globl _halloc

@@ -70,7 +70,7 @@ main:
 Create_QS:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -133,8 +133,8 @@ Create_QS:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -142,7 +142,7 @@ Create_QS:
 QS_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 112
+	subu $sp, $sp, 512
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -308,8 +308,8 @@ QS_Start:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 104($sp)
-	addu $sp, $sp, 112
+	lw $fp, 504($sp)
+	addu $sp, $sp, 512
 	j $ra
 
 	.text
@@ -317,7 +317,7 @@ QS_Start:
 QS_Sort:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 112
+	subu $sp, $sp, 512
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -762,8 +762,8 @@ L18:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 104($sp)
-	addu $sp, $sp, 112
+	lw $fp, 504($sp)
+	addu $sp, $sp, 512
 	j $ra
 
 	.text
@@ -771,7 +771,7 @@ L18:
 QS_Print:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -832,8 +832,8 @@ L20:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
 
 	.text
@@ -841,7 +841,7 @@ L20:
 QS_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 104
+	subu $sp, $sp, 504
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1126,9 +1126,10 @@ L22:
 	lw $s1, 4($sp)
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 96($sp)
-	addu $sp, $sp, 104
+	lw $fp, 496($sp)
+	addu $sp, $sp, 504
 	j $ra
+
 
 	.text
 	.globl _halloc

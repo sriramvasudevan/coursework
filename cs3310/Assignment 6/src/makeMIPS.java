@@ -13,7 +13,7 @@ public class makeMIPS {
     public static void main(String[] args) throws FileNotFoundException {
         try {
             Node root = new MiniRAParser(new FileInputStream(
-                    "submission/test/miniRA/lastyrPrintZero.miniRA")).Goal();
+                    "submission/test/miniRA/lastyrMoreThan4.miniRA")).Goal();
             // Node root = new microIRParser(System.in).Goal();
 
             genMIPSVisitor mips_visitor = new genMIPSVisitor();

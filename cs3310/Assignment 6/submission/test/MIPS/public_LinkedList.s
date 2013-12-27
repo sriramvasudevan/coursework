@@ -30,7 +30,7 @@ main:
 Element_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -50,8 +50,8 @@ Element_Init:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -59,7 +59,7 @@ Element_Init:
 Element_GetAge:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -67,8 +67,8 @@ Element_GetAge:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -76,7 +76,7 @@ Element_GetAge:
 Element_GetSalary:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -84,8 +84,8 @@ Element_GetSalary:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -93,7 +93,7 @@ Element_GetSalary:
 Element_GetMarried:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -101,8 +101,8 @@ Element_GetMarried:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -110,7 +110,7 @@ Element_GetMarried:
 Element_Equal:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -212,8 +212,8 @@ L3:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -221,7 +221,7 @@ L3:
 Element_Compare:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 20
+	subu $sp, $sp, 420
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -255,8 +255,8 @@ L13:
 	lw $s1, 4($sp)
 	lw $s2, 8($sp)
 	lw $ra, -4($fp)
-	lw $fp, 12($sp)
-	addu $sp, $sp, 20
+	lw $fp, 412($sp)
+	addu $sp, $sp, 420
 	j $ra
 
 	.text
@@ -264,7 +264,7 @@ L13:
 List_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -274,8 +274,8 @@ List_Init:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -283,7 +283,7 @@ List_Init:
 List_InitNew:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -303,8 +303,8 @@ List_InitNew:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -312,7 +312,7 @@ List_InitNew:
 List_Insert:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 20
+	subu $sp, $sp, 420
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -377,8 +377,8 @@ L17:
 	lw $s1, 4($sp)
 	lw $s2, 8($sp)
 	lw $ra, -4($fp)
-	lw $fp, 12($sp)
-	addu $sp, $sp, 20
+	lw $fp, 412($sp)
+	addu $sp, $sp, 420
 	j $ra
 
 	.text
@@ -386,7 +386,7 @@ L17:
 List_SetNext:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -398,8 +398,8 @@ List_SetNext:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -407,7 +407,7 @@ List_SetNext:
 List_Delete:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 52
+	subu $sp, $sp, 452
 	sw $ra, -4($fp)
 	sw $s0, 12($sp)
 	sw $s1, 16($sp)
@@ -549,8 +549,8 @@ L19:
 	lw $s6, 36($sp)
 	lw $s7, 40($sp)
 	lw $ra, -4($fp)
-	lw $fp, 44($sp)
-	addu $sp, $sp, 52
+	lw $fp, 444($sp)
+	addu $sp, $sp, 452
 	j $ra
 
 	.text
@@ -558,7 +558,7 @@ L19:
 List_Search:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 32
+	subu $sp, $sp, 432
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -626,8 +626,8 @@ L28:
 	lw $s4, 16($sp)
 	lw $s5, 20($sp)
 	lw $ra, -4($fp)
-	lw $fp, 24($sp)
-	addu $sp, $sp, 32
+	lw $fp, 424($sp)
+	addu $sp, $sp, 432
 	j $ra
 
 	.text
@@ -635,7 +635,7 @@ L28:
 List_GetEnd:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -643,8 +643,8 @@ List_GetEnd:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -652,7 +652,7 @@ List_GetEnd:
 List_GetElem:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -660,8 +660,8 @@ List_GetElem:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -669,7 +669,7 @@ List_GetElem:
 List_GetNext:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -677,8 +677,8 @@ List_GetNext:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -686,7 +686,7 @@ List_GetNext:
 List_Print:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -742,8 +742,8 @@ L32:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -751,7 +751,7 @@ L32:
 LL_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 28
+	subu $sp, $sp, 428
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1187,9 +1187,10 @@ L44:
 	lw $s3, 12($sp)
 	lw $s4, 16($sp)
 	lw $ra, -4($fp)
-	lw $fp, 20($sp)
-	addu $sp, $sp, 28
+	lw $fp, 420($sp)
+	addu $sp, $sp, 428
 	j $ra
+
 
 	.text
 	.globl _halloc

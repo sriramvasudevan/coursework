@@ -11,6 +11,7 @@ main:
 	addu $sp, $sp, 100
 	j $ra
 
+
 	.text
 	.globl _halloc
 _halloc:

@@ -30,7 +30,7 @@ main:
 TV_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -295,8 +295,8 @@ L5:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -304,7 +304,7 @@ L5:
 Tree_Init:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -320,8 +320,8 @@ Tree_Init:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -329,7 +329,7 @@ Tree_Init:
 Tree_SetRight:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -341,8 +341,8 @@ Tree_SetRight:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -350,7 +350,7 @@ Tree_SetRight:
 Tree_SetLeft:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -362,8 +362,8 @@ Tree_SetLeft:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -371,7 +371,7 @@ Tree_SetLeft:
 Tree_GetRight:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -379,8 +379,8 @@ Tree_GetRight:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -388,7 +388,7 @@ Tree_GetRight:
 Tree_GetLeft:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -396,8 +396,8 @@ Tree_GetLeft:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -405,7 +405,7 @@ Tree_GetLeft:
 Tree_GetKey:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -413,8 +413,8 @@ Tree_GetKey:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -422,7 +422,7 @@ Tree_GetKey:
 Tree_SetKey:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -434,8 +434,8 @@ Tree_SetKey:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -443,7 +443,7 @@ Tree_SetKey:
 Tree_GetHas_Right:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -451,8 +451,8 @@ Tree_GetHas_Right:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -460,7 +460,7 @@ Tree_GetHas_Right:
 Tree_GetHas_Left:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -468,8 +468,8 @@ Tree_GetHas_Left:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -477,7 +477,7 @@ Tree_GetHas_Left:
 Tree_SetHas_Left:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -489,8 +489,8 @@ Tree_SetHas_Left:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -498,7 +498,7 @@ Tree_SetHas_Left:
 Tree_SetHas_Right:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -510,8 +510,8 @@ Tree_SetHas_Right:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -519,7 +519,7 @@ Tree_SetHas_Right:
 Tree_Compare:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 20
+	subu $sp, $sp, 420
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -553,8 +553,8 @@ L7:
 	lw $s1, 4($sp)
 	lw $s2, 8($sp)
 	lw $ra, -4($fp)
-	lw $fp, 12($sp)
-	addu $sp, $sp, 20
+	lw $fp, 412($sp)
+	addu $sp, $sp, 420
 	j $ra
 
 	.text
@@ -562,7 +562,7 @@ L7:
 Tree_Insert:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 28
+	subu $sp, $sp, 428
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -741,8 +741,8 @@ L13:
 	lw $s3, 12($sp)
 	lw $s4, 16($sp)
 	lw $ra, -4($fp)
-	lw $fp, 20($sp)
-	addu $sp, $sp, 28
+	lw $fp, 420($sp)
+	addu $sp, $sp, 428
 	j $ra
 
 	.text
@@ -750,7 +750,7 @@ L13:
 Tree_Delete:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 48
+	subu $sp, $sp, 448
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -903,8 +903,8 @@ L21:
 	lw $s6, 24($sp)
 	lw $s7, 28($sp)
 	lw $ra, -4($fp)
-	lw $fp, 40($sp)
-	addu $sp, $sp, 48
+	lw $fp, 440($sp)
+	addu $sp, $sp, 448
 	j $ra
 
 	.text
@@ -912,7 +912,7 @@ L21:
 Tree_Remove:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1034,8 +1034,8 @@ L36:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -1043,7 +1043,7 @@ L36:
 Tree_RemoveRight:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 28
+	subu $sp, $sp, 428
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1116,8 +1116,8 @@ L42:
 	lw $s3, 12($sp)
 	lw $s4, 16($sp)
 	lw $ra, -4($fp)
-	lw $fp, 20($sp)
-	addu $sp, $sp, 28
+	lw $fp, 420($sp)
+	addu $sp, $sp, 428
 	j $ra
 
 	.text
@@ -1125,7 +1125,7 @@ L42:
 Tree_RemoveLeft:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 28
+	subu $sp, $sp, 428
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1198,8 +1198,8 @@ L44:
 	lw $s3, 12($sp)
 	lw $s4, 16($sp)
 	lw $ra, -4($fp)
-	lw $fp, 20($sp)
-	addu $sp, $sp, 28
+	lw $fp, 420($sp)
+	addu $sp, $sp, 428
 	j $ra
 
 	.text
@@ -1207,7 +1207,7 @@ L44:
 Tree_Search:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 32
+	subu $sp, $sp, 432
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1297,8 +1297,8 @@ L46:
 	lw $s4, 16($sp)
 	lw $s5, 20($sp)
 	lw $ra, -4($fp)
-	lw $fp, 24($sp)
-	addu $sp, $sp, 32
+	lw $fp, 424($sp)
+	addu $sp, $sp, 432
 	j $ra
 
 	.text
@@ -1306,7 +1306,7 @@ L46:
 Tree_Print:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 12
+	subu $sp, $sp, 412
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	move $s0 $a0
@@ -1322,8 +1322,8 @@ Tree_Print:
 	move $v0 $t0
 	lw $s0, 0($sp)
 	lw $ra, -4($fp)
-	lw $fp, 4($sp)
-	addu $sp, $sp, 12
+	lw $fp, 404($sp)
+	addu $sp, $sp, 412
 	j $ra
 
 	.text
@@ -1331,7 +1331,7 @@ Tree_Print:
 Tree_RecPrint:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 24
+	subu $sp, $sp, 424
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1404,8 +1404,8 @@ L58:
 	lw $s2, 8($sp)
 	lw $s3, 12($sp)
 	lw $ra, -4($fp)
-	lw $fp, 16($sp)
-	addu $sp, $sp, 24
+	lw $fp, 416($sp)
+	addu $sp, $sp, 424
 	j $ra
 
 	.text
@@ -1413,7 +1413,7 @@ L58:
 Tree_accept:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1434,8 +1434,8 @@ Tree_accept:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -1443,7 +1443,7 @@ Tree_accept:
 Visitor_visit:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1508,8 +1508,8 @@ L62:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
 
 	.text
@@ -1517,7 +1517,7 @@ L62:
 MyVisitor_visit:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 16
+	subu $sp, $sp, 416
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -1590,9 +1590,10 @@ L66:
 	lw $s0, 0($sp)
 	lw $s1, 4($sp)
 	lw $ra, -4($fp)
-	lw $fp, 8($sp)
-	addu $sp, $sp, 16
+	lw $fp, 408($sp)
+	addu $sp, $sp, 416
 	j $ra
+
 
 	.text
 	.globl _halloc

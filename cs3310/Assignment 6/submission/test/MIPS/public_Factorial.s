@@ -32,7 +32,7 @@ main:
 Fac_ComputeFac:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 20
+	subu $sp, $sp, 420
 	sw $ra, -4($fp)
 	sw $s0, 0($sp)
 	sw $s1, 4($sp)
@@ -64,9 +64,10 @@ L3:
 	lw $s1, 4($sp)
 	lw $s2, 8($sp)
 	lw $ra, -4($fp)
-	lw $fp, 12($sp)
-	addu $sp, $sp, 20
+	lw $fp, 412($sp)
+	addu $sp, $sp, 420
 	j $ra
+
 
 	.text
 	.globl _halloc

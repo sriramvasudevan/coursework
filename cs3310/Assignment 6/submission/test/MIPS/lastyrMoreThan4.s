@@ -33,27 +33,27 @@ main:
 	sw $t2, 0($sp)
 	sw $t3, 4($sp)
 	sw $t4, 8($sp)
-	sw $t0, 0($sp)
-	sw $t1, 4($sp)
-	sw $t2, 8($sp)
-	sw $t3, 12($sp)
-	sw $t4, 16($sp)
-	sw $t5, 20($sp)
-	sw $t6, 24($sp)
-	sw $t7, 28($sp)
-	sw $t8, 32($sp)
-	sw $t9, 36($sp)
+	sw $t0, 12($sp)
+	sw $t1, 16($sp)
+	sw $t2, 20($sp)
+	sw $t3, 24($sp)
+	sw $t4, 28($sp)
+	sw $t5, 32($sp)
+	sw $t6, 36($sp)
+	sw $t7, 40($sp)
+	sw $t8, 44($sp)
+	sw $t9, 48($sp)
 	jalr $s6
-	lw $t9, 36($sp)
-	lw $t8, 32($sp)
-	lw $t7, 28($sp)
-	lw $t6, 24($sp)
-	lw $t5, 20($sp)
-	lw $t4, 16($sp)
-	lw $t3, 12($sp)
-	lw $t2, 8($sp)
-	lw $t1, 4($sp)
-	lw $t0, 0($sp)
+	lw $t9, 48($sp)
+	lw $t8, 44($sp)
+	lw $t7, 40($sp)
+	lw $t6, 36($sp)
+	lw $t5, 32($sp)
+	lw $t4, 28($sp)
+	lw $t3, 24($sp)
+	lw $t2, 20($sp)
+	lw $t1, 16($sp)
+	lw $t0, 12($sp)
 	move $t5 $v0
 	move $a0 $t5
 	jal _print
@@ -66,16 +66,16 @@ main:
 MT4_Start:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 140
+	subu $sp, $sp, 540
 	sw $ra, -4($fp)
-	sw $s0, 12($sp)
-	sw $s1, 16($sp)
-	sw $s2, 20($sp)
-	sw $s3, 24($sp)
-	sw $s4, 28($sp)
-	sw $s5, 32($sp)
-	sw $s6, 36($sp)
-	sw $s7, 40($sp)
+	sw $s0, 24($sp)
+	sw $s1, 28($sp)
+	sw $s2, 32($sp)
+	sw $s3, 36($sp)
+	sw $s4, 40($sp)
+	sw $s5, 44($sp)
+	sw $s6, 48($sp)
+	sw $s7, 52($sp)
 	move $t6 $a0
 	move $t7 $a1
 	move $t8 $a2
@@ -102,44 +102,44 @@ MT4_Start:
 	move $a1 $s0
 	move $a2 $s3
 	move $a3 $s2
-	sw $t9, 0($sp)
-	sw $t8, 4($sp)
-	sw $t7, 8($sp)
-	sw $t0, 44($sp)
-	sw $t1, 48($sp)
-	sw $t2, 52($sp)
-	sw $t3, 56($sp)
-	sw $t4, 60($sp)
-	sw $t5, 64($sp)
-	sw $t6, 68($sp)
-	sw $t7, 72($sp)
-	sw $t8, 76($sp)
-	sw $t9, 80($sp)
+	sw $t9, 56($sp)
+	sw $t8, 60($sp)
+	sw $t7, 64($sp)
+	sw $t0, 112($sp)
+	sw $t1, 116($sp)
+	sw $t2, 120($sp)
+	sw $t3, 124($sp)
+	sw $t4, 128($sp)
+	sw $t5, 132($sp)
+	sw $t6, 136($sp)
+	sw $t7, 140($sp)
+	sw $t8, 144($sp)
+	sw $t9, 148($sp)
 	jalr $s4
-	lw $t9, 80($sp)
-	lw $t8, 76($sp)
-	lw $t7, 72($sp)
-	lw $t6, 68($sp)
-	lw $t5, 64($sp)
-	lw $t4, 60($sp)
-	lw $t3, 56($sp)
-	lw $t2, 52($sp)
-	lw $t1, 48($sp)
-	lw $t0, 44($sp)
+	lw $t9, 148($sp)
+	lw $t8, 144($sp)
+	lw $t7, 140($sp)
+	lw $t6, 136($sp)
+	lw $t5, 132($sp)
+	lw $t4, 128($sp)
+	lw $t3, 124($sp)
+	lw $t2, 120($sp)
+	lw $t1, 116($sp)
+	lw $t0, 112($sp)
 	move $s6 $v0
 	move $s7 $s6
 	move $v0 $s7
-	lw $s7, 40($sp)
-	lw $s6, 36($sp)
-	lw $s5, 32($sp)
-	lw $s4, 28($sp)
-	lw $s3, 24($sp)
-	lw $s2, 20($sp)
-	lw $s1, 16($sp)
-	lw $s0, 12($sp)
+	lw $s7, 108($sp)
+	lw $s6, 104($sp)
+	lw $s5, 100($sp)
+	lw $s4, 96($sp)
+	lw $s3, 92($sp)
+	lw $s2, 88($sp)
+	lw $s1, 84($sp)
+	lw $s0, 80($sp)
 	lw $ra, -4($fp)
-	lw $fp, 132($sp)
-	addu $sp, $sp, 140
+	lw $fp, 532($sp)
+	addu $sp, $sp, 540
 	j $ra
 
 	.text
@@ -147,22 +147,22 @@ MT4_Start:
 MT4_Change:
 	sw $fp, -8($sp)
 	move $fp, $sp
-	subu $sp, $sp, 116
+	subu $sp, $sp, 516
 	sw $ra, -4($fp)
-	sw $s0, 12($sp)
-	sw $s1, 16($sp)
-	sw $s2, 20($sp)
-	sw $s3, 24($sp)
-	sw $s4, 28($sp)
-	sw $s5, 32($sp)
-	sw $s6, 36($sp)
-	sw $s7, 40($sp)
+	sw $s0, 80($sp)
+	sw $s1, 84($sp)
+	sw $s2, 88($sp)
+	sw $s3, 92($sp)
+	sw $s4, 96($sp)
+	sw $s5, 100($sp)
+	sw $s6, 104($sp)
+	sw $s7, 108($sp)
 	move $t5 $a1
 	move $t3 $a2
 	move $t4 $a3
-	lw $t1, 0($fp)
-	lw $t2, 4($fp)
-	lw $t0, 8($fp)
+	lw $t1, 56($fp)
+	lw $t2, 60($fp)
+	lw $t0, 64($fp)
 	move $a0 $t5
 	jal _print
 	move $a0 $t3
@@ -177,18 +177,19 @@ MT4_Change:
 	jal _print
 	li $t6 0
 	move $v0 $t6
-	lw $s7, 40($sp)
-	lw $s6, 36($sp)
-	lw $s5, 32($sp)
-	lw $s4, 28($sp)
-	lw $s3, 24($sp)
-	lw $s2, 20($sp)
-	lw $s1, 16($sp)
-	lw $s0, 12($sp)
+	lw $s7, 108($sp)
+	lw $s6, 104($sp)
+	lw $s5, 100($sp)
+	lw $s4, 96($sp)
+	lw $s3, 92($sp)
+	lw $s2, 88($sp)
+	lw $s1, 84($sp)
+	lw $s0, 80($sp)
 	lw $ra, -4($fp)
-	lw $fp, 108($sp)
-	addu $sp, $sp, 116
+	lw $fp, 508($sp)
+	addu $sp, $sp, 516
 	j $ra
+
 
 	.text
 	.globl _halloc
