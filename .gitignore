@@ -8,3 +8,7 @@ nbproject/
 *.swp
 *.dep.inc
 *~
+*.class
+*.log
+*.aux
+*.pyc

@@ -1,0 +1,297 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\usepackage[margin=0.8in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 3 - Part B: Page Faults, Breakpoints Exceptions, and System Calls},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Lab 3 - Part B: Page Faults, Breakpoints Exceptions, and System Calls}
+\author{Sriram V - CS11B058}
+\date{}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise 5}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Modified \texttt{trap\_dispatch()} in \texttt{kern/trap.c} to handle
+  page fault exceptions.
+\item
+  We check whether \texttt{tf-\textgreater{}tf\_trapno} is equal to
+  \texttt{T\_PGFLT} and call \texttt{page\_fault\_handler(tf)} if they
+  are. (\texttt{lines 159 - 161})
+\item
+  \texttt{make grade} now succeeds on the \texttt{faultread},
+  \texttt{faultreadkernel}, \texttt{faultwrite}, and
+  \texttt{faultwritekernel} tests.
+\end{itemize}
+
+\subsection{Exercise 6}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Modified \texttt{trap\_dispatch()} in \texttt{kern/trap.c} to handle
+  breakpoint exceptions.
+\item
+  We check if \texttt{tf-\textgreater{}tf\_trapno} is \texttt{T\_BRKPT}
+  and call \texttt{monitor(tf)} if it is. (\texttt{lines 163 - 165})
+\item
+  We also change the privilege level from \texttt{0} to \texttt{3} in
+  the IDT for the breakpoint's trap handler entry, in
+  \texttt{trap\_init()}. (\texttt{line 76})
+\item
+  \texttt{make grade} now succeeds on the \texttt{breakpoint} test.
+\end{itemize}
+
+\subsubsection{Questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{The break point test case will either generate a break point
+  exception or a general protection fault depending on how you
+  initialized the break point entry in the IDT (i.e., your call to
+  \texttt{SETGATE} from \texttt{trap\_init}). Why? How do you need to
+  set it up in order to get the breakpoint exception to work as
+  specified above and what incorrect setup would cause it to trigger a
+  general protection fault?}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  If the break point entry is set up in the IDT to be run only with
+  kernel privileges (\texttt{DPL=0}), a general protection fault is
+  triggered when it is called from the user level due to a privilege
+  level violation.
+\item
+  However if the breakpoint entry is set with \texttt{DPL=3} (user mode)
+  in the IDT, then it can be called from the user level.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{What do you think is the point of these mechanisms,
+  particularly in light of what the \texttt{user/softint} test program
+  does?}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  We want only a few exceptions (such as the system call and breakpoint
+  exceptions) to be accessible by the user. The user musn't have access
+  to all 256 exceptions for security purposes.
+\item
+  Thus, we set the exceptions to be accessed by the user to
+  \texttt{DPL=3} in the IDT, and \texttt{DPL=0} for the rest.
+\item
+  In \texttt{user/softint}, the user tries to generate a page fault. He
+  could get the kernel to run malicious code by pushing this code on to
+  the stack and calling the page fault, so that the interrupt service
+  routine pops the malicious code and executes it. The page fault could
+  also be used to allocate additional physical memory (a page fault
+  would imply that the page doesn't exist in the memory, so the kernel
+  would allocate additional physical memory assuming it would have to
+  load in new pages) for the process -- something no user should be able
+  to do from user mode.
+\end{itemize}
+
+\subsection{Exercise 7}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  To handle the system call (exception number \texttt{48}), I had to add
+  in trap handlers (that don't take any error codes -
+  \texttt{TRAPHANDLER\_NOEC()}) for all exceptions from \texttt{20} to
+  \texttt{48}, since I use an array for the trap handlers (Lab 3 - Part
+  A's challenge). By adding in these extra trap handlers, I can index
+  into the array easily, rather than remembering which index maps to
+  which exception number.
+\item
+  I then created corresponding entries for all these trap handlers in
+  the IDT in \texttt{kern/trap.c}, by increasing my iterations from
+  \texttt{20} (done in Part A) to \texttt{49}.
+\item
+  The privilege level for the \texttt{T\_SYSCALL} trap handler entry in
+  the IDT is changed to \texttt{3} -- user level. (\texttt{line 79} in
+  \texttt{kern/trap.c})
+\item
+  \texttt{trap\_dispatch()} is modified to handle \texttt{T\_SYSCALL}.
+  The \texttt{syscall()} function is called, and the \texttt{EAX},
+  \texttt{EDX}, \texttt{ECX}, \texttt{EBX}, \texttt{EDI} and
+  \texttt{ESI} register values (present in the \texttt{Trapframe}
+  structure) are passed to it.
+\item
+  Its return value is stored back in the \texttt{EAX} register of the
+  \texttt{Trapframe} structure.
+\item
+  The \texttt{syscall()} function is modified in \texttt{kern/syscall.c}
+  to handle the various system calls (the system call numbers are
+  specified in \texttt{inc/syscall.h}).
+\item
+  A \texttt{switch-case} is used to compare \texttt{syscallno} with the
+  various system call numbers, and call the appropriate function.
+\item
+  Since \texttt{sys\_cputs()} doesn't return anything, we return
+  \texttt{0} instead.
+\item
+  If the system call number is invalid, an error message is printed and
+  \texttt{-E\_INVAL} is returned.
+\item
+  Running \texttt{make run-hello-nox} prints \texttt{hello, world} on
+  the console and causes a page fault in user mode.
+\item
+  \texttt{make grade} now succeeds on the \texttt{testbss} test.
+\end{itemize}
+
+\subsection{Exercise 8}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The \texttt{user/hello.c} program page faults because it tries to
+  access the current environment's user id
+  (\texttt{thisenv-\textgreater{}env\_id}). However, \texttt{thisenv}
+  has been set to \texttt{NULL} in \texttt{lib/libmain.c}.
+\item
+  We rectify this by getting the current environment's system ID using
+  the \texttt{sys\_getenvid()} system call.
+\item
+  We make use of the \texttt{ENVX()} macro to get the corresponding
+  environment entry in the \texttt{envs{[}{]}} array.
+\item
+  \texttt{thisenv} is now made to point to this object.
+\item
+  Booting into the kernel now prints \texttt{hello, world} as well as
+  \texttt{i am environment 00001000}.
+\item
+  Since the kernel currently supports only one user environment and
+  \texttt{user/hello.c} calls \texttt{sys\_env\_destroy()}, the kernel
+  reports that the only environment has been destroyed and drops into
+  the kernel monitor.
+\item
+  \texttt{make grade} now succeeds on the \texttt{hello} test.
+\end{itemize}
+
+\subsection{Exercise 9}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The \texttt{page\_fault\_handler()} function in \texttt{kern/trap.c}
+  is modified to panic if a page fault happens in kernel mode.
+\item
+  We check if the low bits of \texttt{tf-\textgreater{}tf\_cs} is not
+  equal to the user's DPL (\texttt{0x3}).
+\item
+  \texttt{user\_mem\_check()} in \texttt{kern/pmap.c} is then
+  implemented. The passed permissions \texttt{perm} is modified to
+  include \texttt{PTE\_P}.
+\item
+  The start virtual address \texttt{va} is rounded down, and
+  \texttt{va+len} is rounded up and set as the end address.
+\item
+  If the address accessed is greater than \texttt{ULIM}, we jump to
+  \texttt{bad}.
+\item
+  Now we try to get the corresponding page entry in the environment's
+  page table. If it doesn't exist, we once again jump to \texttt{bad}.
+\item
+  If it does exist, we check if the set permissions are equal to the
+  permissions passed to the function. If it isn't, we jump to
+  \texttt{bad}.
+\item
+  These checks are performed for all pages in the range
+  \texttt{{[}va, va+len)}.
+\item
+  If the user program can access this range of addresses, the function
+  returns \texttt{0}.
+\item
+  \texttt{bad} is a label below which we write the code to handle all
+  the errors.
+\item
+  We set \texttt{user\_mem\_check\_addr} to the first erroneous virtual
+  address. This is done by initialising this variable to \texttt{va},
+  and if the current address being checked is greater than \texttt{va},
+  we set \texttt{user\_mem\_check\_addr} to this value (since this is
+  the first address at which the error occured).
+\item
+  We now return \texttt{-E\_FAULT} as an error has occured.
+\item
+  \texttt{debuginfo\_eip()} is modified in \texttt{kern/kdebug.c} to
+  call \texttt{user\_mem\_assert()} on \texttt{usd}, \texttt{stabs} and
+  \texttt{stabstr}, to check whether they have \texttt{PTE\_U}
+  permissions.
+\item
+  \texttt{make run-breakpoint-nox} now allows us to enter the kernel
+  monitor and use the \texttt{backtrace} command.
+\item
+  We see the backtrace traverse into lib/libmain.c before the kernel
+  panics with a page fault.
+\end{itemize}
+
+\subsection{Exercise 10}
+
+\begin{itemize}
+\item
+  We now run \texttt{make run-evilhello-nox}. The environment gets
+  destroyed, as is required by this exercise.
+\item
+  The output observed is:
+
+\begin{verbatim}
+[00001000] user_mem_check assertion failure for va f010000c
+[00001000] free env 00001000
+Destroyed the only environment - nothing more to do!
+\end{verbatim}
+\item
+  All the \texttt{make grade} tests pass now.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,453 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\usepackage[margin=0.8in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 3 - Part A : User Environments and Exception Handling},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Lab 3 - Part A : User Environments and Exception Handling}
+\author{Sriram V - CS11B058}
+\date{}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise 1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Modified \texttt{mem\_init()} in \texttt{kern/pmap.c} to allocate and
+  map the \texttt{envs} array.
+\item
+  The added code is very similar to the allocation and mapping of
+  \texttt{pages} in the previous lab. This is because although the
+  previous lab dealt with the management of pages and the current one
+  with user environments, both need to be kept track of by the kernel,
+  and this book-keeping for both is done by different \texttt{struct}s.
+\item
+  \texttt{NENV} instances (pointed to by \texttt{envs}) of the
+  \texttt{Env} structure are initialised with the help of
+  \texttt{boot\_alloc()} at \texttt{line 162}.
+\item
+  \texttt{envs} is also mapped to \texttt{UENVS} (read-only), which
+  allows user processes to access this data without modifying it. This
+  is done by means of the \texttt{boot\_map\_region()} function, which
+  allocates the necessary pages and adds entries in the Page Directory.
+  (\texttt{line 197} in \texttt{kern/pmap.c})
+\item
+  The kernel however has read-write access because it accesses
+  \texttt{envs} at a higher virtual address that has RW permissions for
+  the kernel, but cannot be accessed by the user. (Done by the mapping
+  at \texttt{line 222}).
+\item
+  Running \texttt{make qemu} after this gives a
+  \texttt{check\_kern\_pgdir()} success message.
+\end{itemize}
+
+\subsection{Exercise 2}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Now that the code to create \texttt{envs} is done, we fill in the code
+  to actually create and run a user environment. Code to update
+  \texttt{envs} (to help the kernel keep track of user environments) is
+  also added in. All this is written in the \texttt{kern/env.c} file.
+\item
+  The \texttt{cprintf} verb \texttt{\%e} is used in the \texttt{panic()}
+  calls to print out descriptions corresponding to error codes.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{\texttt{env\_init()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This function initialises the \texttt{Env} structures in the
+    \texttt{envs} array and adds it to the \texttt{env\_free\_list}
+    linked list. (\texttt{lines 114 - 134})
+  \item
+    \texttt{env\_free\_list} is initially set to \texttt{NULL}.
+  \item
+    Since the environments in the free list are to be in the same order
+    as they are in the \texttt{envs} array, \texttt{envs} is looped over
+    in reverse order, so that when an element of \texttt{envs} is being
+    added to the list, its \texttt{env\_link} can be made to point to
+    the element that is next in the free list array.
+  \item
+    The status is set to \texttt{ENV\_FREE} for each of the elements,
+    and their runs are initialised to \texttt{0}.
+  \item
+    Finally \texttt{env\_init\_percpu()} is called, which configures the
+    segmentation hardware with separate segments for the kernel(PL 0)
+    and user(PL 3).
+  \end{itemize}
+\item
+  \textbf{\texttt{env\_setup\_vm()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    In this function, the kernel virtual memory layout for an
+    environment is initialised. (\texttt{lines 167 - 206})
+  \item
+    A page directory is allocated using \texttt{page\_alloc()}
+    (initialised with all bytes equal to \texttt{\textbackslash{}0}).
+  \item
+    The kernel's page directory is copied into the environment's page
+    directory. This is because the virtual address space of all
+    environments is identical above \texttt{UTOP}, except at
+    \texttt{UVPT}. This virual axdress space contains the kernel. Hence,
+    the kernel's virtual address mappings are copied in.
+  \item
+    The reference counter for the page directory is incremented as well,
+    since it is inserted into itself, at \texttt{UVPT}.
+  \end{itemize}
+\item
+  \textbf{\texttt{region\_alloc()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This function allocates \texttt{len} bytes of physical memory for an
+    environment, and also mapes it at a virtual address that is in the
+    environment's address space. (\texttt{lines 278 - 297})
+  \item
+    As required by the implementation of the function, the passed
+    \texttt{va} and \texttt{va+len} are rounded down and rounded up
+    respectively, so that the usage of this function becomes simpler.
+  \item
+    Physical memory for this environment is then allocated in the form
+    of pages (using \texttt{page\_alloc()}) and inserting them into the
+    \texttt{env\_pgdir} (using \texttt{page\_insert()}) with the
+    relevant permissions (user and kernel RW).
+  \end{itemize}
+\item
+  \textbf{\texttt{load\_icode()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Since we don't have a filesystem as yet, the kernel is set up to
+    load static binary images that are embedded within the kernel
+    itself. These binaries are in the \texttt{ELF} format.
+  \item
+    The \texttt{load\_icode()} function loads a passed binary into the
+    passed environment, and sets up its stack and processor flags
+  \item
+    A good place for reference is the \texttt{boot/main.c} file, since
+    the loading of a binary into an environment is very similar to the
+    loading of the kernel into the memory by the bootloader.
+  \item
+    The binary is first tested to be of a valid \texttt{ELF} format,
+    with the help of the \texttt{ELF\_MAGIC} value.
+  \item
+    \texttt{ph} is then set to point to the start of the program header
+    structures in the binary.
+  \item
+    The page directory is also set to the passed environment's (using
+    \texttt{lcr3()}) page directory (even though the environment is not
+    running, but is simply being loaded into), so that the virtual
+    address mappings for this environment are set up, thus making the
+    loading of the program segments at the relevant virtual addresses
+    much simpler.
+  \item
+    For each loadable program segment (specified by a \texttt{p\_type}
+    of \texttt{ELF\_PROG\_LOAD}), a region of physical memory is
+    allocated, and the binary is moved into this physical space using
+    \texttt{memmove()}.
+  \item
+    The remaining memory is set to \texttt{0} using \texttt{memset()}.
+  \item
+    The file size must be less than the memory allocated for a
+    particular loadable program segment, otherwise an error must be
+    thrown.
+  \item
+    The environment's \texttt{EIP} is set to the entry point for the
+    code, mentioned in the binary's \texttt{e\_entry} variable. The EIP
+    is stored in the Trapframe associated with an environment.
+  \item
+    Finally, physical memory for the stack (for the loaded binary) is
+    allocated with \texttt{region\_alloc()}, of size \texttt{PGSIZE}.
+  \item
+    The page directory to be used is also forced back to the kernel's
+    page directory, using the \texttt{lcr3()} function.
+  \end{itemize}
+\item
+  \textbf{\texttt{env\_create()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Used to create a new environment, load in a passed binary, and set
+    the environment type to the passed type.
+  \item
+    The new environment is created using the \texttt{env\_alloc()}
+    function. The parent ID of the new environment is set to \texttt{0}.
+  \item
+    Failure to allocate a new environment results in a panic.
+  \item
+    Otherwise, the binary is loaded into the newly created environment
+    using \texttt{load\_icode()}
+  \item
+    The \texttt{env\_type} variable for the environment is set to the
+    passed variable, \texttt{type}.
+  \end{itemize}
+\item
+  \textbf{\texttt{env\_run()}:}
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    This function enables a context switch from the current environment
+    to the passed environment.
+  \item
+    If a current environment (\texttt{curenv}) exists (not the first
+    call to this function), then set its status from
+    \texttt{ENV\_RUNNING} to \texttt{ENV\_RUNNABLE}.
+  \item
+    \texttt{curenv} is set to the passed environment, and its status is
+    set to \texttt{ENV\_RUNNING}.
+  \item
+    The number of runs for this environment is incremented, and
+    \texttt{lcr3()} is used to switch to its address space, by forcing
+    the use of its page directory.
+  \item
+    A call to \texttt{env\_pop\_tf()} is made with the passed
+    environment's Trapframe as an argument.
+  \item
+    This restores the register values in the Trapframe with the
+    \texttt{iret} instruction, exits the kernel, and starts executing
+    the environment's code.
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Exercise 3}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Read the chapter on `Exceptions and Interrupts' in the 80386
+  Programmer's Manual and the IA-32 Developer's Manual, and understood
+  the differences between exceptions and interrupts with regard to
+  Intel.
+\end{itemize}
+
+\subsection{Exercise 4}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  When an interrupt/exception occurs, control is transferred to the
+  kernel.
+\item
+  However, in order to ensure that the protected control transfers are
+  actually \emph{protected}, the processor's interrupt/exception
+  mechanism is designed so that the code running currently when the
+  interrupt or exception occurs doesn't get to choose arbitrarily where
+  and how the kernel is to be entered.
+\item
+  Hence, we need to specify entry points into the kernel for the various
+  exceptions. In this Exercise, we only handle the processor exceptions.
+\item
+  For the 20 processor defined exceptions (given by \texttt{\#define}s
+  in \texttt{inc/trap.h}), we add an entry point by using either the
+  \texttt{TRAPHANDLER()} or \texttt{TRAPHANDLER\_NOEC()} macro,
+  depending on whether the exception has an associated error code or not
+  respectively. Whether an exception pushes an error code on the stack
+  can be found out by looking at the Error Code Summary in the 80386
+  Programmer's Manual.
+\item
+  For a particular exception, we can specify any name that we wish as
+  the first parameter of the appropriate macro, and this enables us to
+  pass the exception handling routine as a function pointer (during IDT
+  setup), by using this name.
+\item
+  Certain exceptions are reserved by Intel (9 and 15 in the first 20
+  exceptions), and since they will never be generated by the processor
+  we can handle them in any way as we desire.
+\item
+  The macro creates the exception handler routine for an excepion. The
+  exception handler routine pushes a trap number and either an error
+  code or a zero onto the stack, and jumps to \texttt{\_alltraps}.
+\item
+  The code for \texttt{\_alltraps} in \texttt{kern/trapentry.S} pushes
+  the DS and ES segment descriptors onto the stack, which is followed by
+  pushing in all the 8 registers. It is done in this order because it
+  fits in nicely with the layout of \texttt{strcut Trapframe}.
+  (Trapframe registers on the top, followed by \texttt{ES}, \texttt{DS},
+  the trap number, error code etc.)
+\item
+  Now the kernel's data segment descriptor (at \texttt{GD\_KD}) is
+  loaded into \texttt{DS} and \texttt{ES}.
+\item
+  \texttt{ESP} is pushed onto the stack, to pass the built up Trapframe
+  as an argument to \texttt{trap}. (Passing \texttt{ESP} means that a
+  pointer to the Trapframe is being passed.)
+\item
+  A \texttt{call} to \texttt{trap} is made.
+\item
+  It doesn't look like \texttt{trap} can return, since a dispatch is
+  made depending on what type of trap occured, which is then followed by
+  a call to \texttt{env\_run()}, which we know exits the kernel and
+  enters the user environment.
+\end{itemize}
+
+\subsubsection{Challenge:}
+
+\begin{itemize}
+\item
+  I got rid of the similar looking code in \texttt{kern/trapentry.S} and
+  \texttt{kern/trap.c}, by making use of an array, and adding the
+  function names to this array as and when they are created.
+\item
+  I referred to the xv6 source code, which makes use of a
+  \texttt{vectors} array for this purpose.
+\item
+  In \texttt{trapentry.S}, I defined the array with the code:
+
+\begin{verbatim}
+.data
+.globl thandlers
+thandlers:
+\end{verbatim}
+\item
+  I also modified the two macros by adding a \texttt{.text} in the
+  beginning (to specify that the following code is part of the program's
+  text portion) and added
+
+\begin{verbatim}
+.data;
+.long name
+\end{verbatim}
+
+  at the end (to specify that this bit of code is part of the program's
+  data section).
+\item
+  Thus, this builds an array of function pointers to interrupt handler
+  routines.
+\item
+  By specifying \texttt{extern int thandlers{[}{]};} at \texttt{line 61}
+  in \texttt{kern/trap.c}, we can use \texttt{thandlers{[}i{]}} in a
+  \texttt{for} loop (that has \texttt{SETGATE()} as the body), instead
+  of having multiple lines of \texttt{SETGATE()} calls.
+\item
+  Also, the one \texttt{extern} array declaration helps us to get rid of
+  the multiple \texttt{extern void NAME();} declarations that were
+  required earlier.
+\end{itemize}
+
+\subsubsection{Questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{What is the purpose of having an individual handler function
+  for each exception/interrupt? (i.e., if all exceptions/interrupts were
+  delivered to the same handler, what feature that exists in the current
+  implementation could not be provided?)}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The purpose of having an individual handler function for each
+  exception/interrupt is so that the OS can have different values on the
+  stack for different interrupts/exceptions.
+\item
+  For those that take an error code, their error code may be pushed onto
+  the stack. For those that don't, a zero is pushed. Apart from this,
+  different values may also be pushed onto the stack specifically for
+  different interrupts/exceptions.
+\item
+  If all exceptions/interrupts were delivered to the same handler, then
+  distinct trap numbers wouldn't be pushed onto the stack before calling
+  \texttt{trap}. Thus, the \texttt{trap()} function wouldn't be able to
+  distinguish between different exceptions/interrupts. The hardware too
+  is incapable of distinguishing between trap errors.
+\item
+  Without this distinguishing feature present in the kernel code, if we
+  wish to handle different interrupts/exceptions, we would have to allow
+  the user to invoke the exception/interrupt, and this is a serious
+  security issue.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{Did you have to do anything to make the user/softint program
+  behave correctly? The grade script expects it to produce a general
+  protection fault (\texttt{trap 13}), but \texttt{softint}'s code says
+  \texttt{int \$14}. Why should this produce interrupt vector 13? What
+  happens if the kernel actually allows \texttt{softint}'s
+  \texttt{int \$14} instruction to invoke the kernel's page fault
+  handler (which is interrupt vector 14)?}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  No, I didn't have to do anything to make it behave correctly. The
+  \texttt{softint} program tries to invoke the page fault handler on its
+  own, but we shouldn't allow users to invoke exceptions of their
+  choice. This is ensured by setting \texttt{DPL=0} while filling up the
+  IDT using \texttt{SETGATE()}(the last parameter) -- \texttt{line 72}
+  in \texttt{trap/entry.c}.
+\item
+  Thus, when the user at a numerically higher privilege level
+  (\texttt{PL = 3}) tries to access code at a numerically lower
+  privilege level (\texttt{PL = 0}), a General Protection Fault
+  (\texttt{trap 13}) is triggered instead, to handle the error of a
+  piece of code violating privilege rules.
+\item
+  If we did allow the user to invoke exceptions as and when they choose,
+  it can result in the execution of malicious code with kernel
+  privileges. The user can push in malicious code into the stack, and
+  then make a call to an exception, which would pick up the malicious
+  code off the stack and execute it with kernel privileges.
+\end{itemize}
+
+\end{document}

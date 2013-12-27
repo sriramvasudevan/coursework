@@ -1,0 +1,293 @@
+\documentclass[]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\usepackage[margin=0.8in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sriram V - CS11B058},
+            pdftitle={Lab 4 - Part A: Multiprocessor Support and Cooperative Multitasking},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Lab 4 - Part A: Multiprocessor Support and Cooperative Multitasking}
+\author{Sriram V - CS11B058}
+\date{}
+
+\begin{document}
+\maketitle
+
+\subsection{Exercise 1}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Implemented \texttt{mmio\_map\_region()} in \texttt{kern/pmap.c}.
+\item
+  The passed \texttt{size} is rounded up and checks are made to ensure
+  that the limit doesn't exceed \texttt{MMIOLIM}.
+\item
+  \texttt{boot\_map\_region()} is then called to map at
+  \texttt{MMIOBASE} the passed physical address with the appropriate
+  permissions.
+\end{itemize}
+
+\subsection{Exercise 2}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The only change that is made to \texttt{page\_init()} here is a
+  special check for \texttt{MPENTRY \_PADDR}.
+\item
+  If the page is the page corresponding to this address, the
+  \texttt{pp\_ref} is incremented for this page, and its link is set to
+  \texttt{NULL}.
+\item
+  Now the AP bootstrap code can be safely copied and run at this
+  physical address.
+\item
+  The code now successfully passes the updated
+  \texttt{check\_page\_free\_list()}.
+\end{itemize}
+
+\subsubsection{Questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{Compare \texttt{kern/mpentry.S} side by side with
+  \texttt{boot/boot.S}. Bearing in mind that \texttt{kern/mpentry.S} is
+  compiled and linked to run above \texttt{KERNBASE} just like
+  everything else in the kernel, what is the purpose of macro
+  \texttt{MPBOOTPHYS}? Why is it necessary in \texttt{kern/mpentry.S}
+  but not in \texttt{boot/boot.S}? In other words, what could go wrong
+  if it were omitted in \texttt{kern/mpentry.S}? Hint: recall the
+  differences between the link address and the load address that we have
+  discussed in Lab 1.}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  MPBOOTPHYS(s) ((s) - mpentry\_start + MPENTRY\_PADDR) to calculate
+  absolute addresses of its symbols, rather than relying on the linker
+  to fill them
+\item
+  If it was exactly like boot.S, then the linker would put the symbols
+  not where we want it, but elsewhere. We have control in this way.
+\end{itemize}
+
+\subsection{Exercise 3}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  In \texttt{mem\_init\_mp()} in \texttt{kern/pmap.c}, for each of the
+  \texttt{NCPU}s we use \texttt{boot\_map\_region()} to map into the
+  kernel page directory the physical address of each CPU's stack.
+\item
+  The subtracted amount after each mapping is
+  \texttt{KSTKSIZE + KSTKGAP}. This is because we need to account for
+  both the stack size as well as the gap maintained between each stack
+  (so that a stack overflow will not overwrite other stacks).
+\item
+  The code now passes \texttt{check\_pgdir()}.
+\end{itemize}
+
+\subsection{Exercise 4}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Here we modify the \texttt{trap\_init\_percpu()} function in
+  \texttt{kern/trap.c} to handle multiple CPUs by primarily modifying
+  the global \texttt{ts} variable into a local variable that is equal to
+  the current CPU's Taskstate.
+\item
+  \texttt{ss0} remains as \texttt{GD\_KD} as the kernel's data segment
+  won't change.
+\item
+  However, the stack used by each CPU is different, and consequently the
+  \texttt{esp0} value is modified from \texttt{KSTACKTOP} to
+  \texttt{KSTACKTOP - (KSTKSIZE + KSTKGAP) * cpu\_id}.
+\item
+  The index of the \texttt{GDT} and its offset vary from CPU to CPU as
+  well, and thus the \texttt{TSS} of each CPU is calculated as
+  \texttt{GD\_TSS0 + (cpu\_id \textless{}\textless{} 3)}.
+\item
+  The rest of the code remains the same.
+\end{itemize}
+
+\subsection{Exercise 5}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  This exercise involves locking and unlocking the kernel at
+  appropritate points to address race conditions when multiple CPUs run
+  the kernel code simultaneously.
+\item
+  In \texttt{i386\_init()} in \texttt{kern/init.c}, the kernel lock is
+  acquired before the APs are wokern up.
+\item
+  In \texttt{mp\_main()}, to ensure that only one CPU can enter the
+  scheduler at a time, we lock the kernel before calling
+  \texttt{sched\_yield()}.
+\item
+  In \texttt{trap()}, the lock is inserted if \texttt{tf\_cs} is equal
+  to \texttt{3}.
+\item
+  In \texttt{env\_run()}, the kernel is unlocked right before popping
+  the new environment's Trapframe.
+\end{itemize}
+
+\subsubsection{Questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{It seems that using the big kernel lock guarantees that only
+  one CPU can run the kernel code at a time. Why do we still need
+  separate kernel stacks for each CPU? Describe a scenario in which
+  using a shared kernel stack will go wrong, even with the protection of
+  the big kernel lock.}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Can happen in the case of context switch. P1 pushes some data onto
+  kernel stack to be accessed later. Critical data it is. Context switch
+  to P2
+\item
+  Now P2 also pushes some critical data to access later. now context
+  switch to p1. Now when P1 wants to access it's data that it pushed, it
+  ends up having access to p2's data, a security vulnerability.
+\end{itemize}
+
+\subsection{Exercise 6}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Round robin scheduler is implemented in \texttt{sched\_yield()}.
+\item
+  The index is initialized to \texttt{-1}, so that if no current
+  environment exists, the increment inside the loop will set index to
+  zero.
+\item
+  Else, the index will be set inside the loop to the next environment.
+\item
+  We loop through all environments and search for an
+  \texttt{ENV\_RUNNABLE} environment.
+\item
+  If no such environemnt is found, and the current environment is not
+  null and is \texttt{ENV\_RUNNING}, then we \texttt{env\_run()} the
+  current environment itself.
+\item
+  \texttt{yield.c} running on 3 environemnts now uses the scheduler
+  succesfully.
+\end{itemize}
+
+\subsubsection{Questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{In your implementation of env\_run() you should have called
+  lcr3(). Before and after the call to lcr3(), your code makes
+  references (at least it should) to the variable e, the argument to
+  env\_run. Upon loading the \%cr3 register, the addressing context used
+  by the MMU is instantly changed. But a virtual address (namely e) has
+  meaning relative to a given address context--the address context
+  specifies the physical address to which the virtual address maps. Why
+  can the pointer e be dereferenced both before and after the addressing
+  switch?}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  This is because in every environment we map all the virtual addresses
+  above UTOP (the kernel addresses) to be the same. Hence, we can
+  continue to dereference the pointer before and after the context
+  switch.
+\item
+  Because both page directories (kernel and user mode) has the same
+  entries for the kernel addresses mapping.
+\item
+  That way reloading \%cr3 register makes no difference, since the `e'
+  pointer will have a kernel address, which is correctly mapped in the
+  just loaded page directory.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \textbf{Whenever the kernel switches from one environment to another,
+  it must ensure the old environment's registers are saved so they can
+  be restored properly later. Why? Where does this happen?}
+\end{enumerate}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Called a context switch. Done so that an environment can resume from
+  the pt where it switched. The Trapframe struct contains details of all
+  regs for an env. env's pgdir and tf are changed when \texttt{env\_run}
+  is called.
+\end{itemize}
+
+\subsection{Exercise 7}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  The system calls implemented are primarily wrapper functions for
+  already existing functions.
+\item
+  Hence, the only code that had to be written are the required sanity
+  checks before calling these functions.
+\item
+  \texttt{dumbfork.c} now works successfully.
+\end{itemize}
+
+\end{document}

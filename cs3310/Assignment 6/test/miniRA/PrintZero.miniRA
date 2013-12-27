@@ -1,0 +1,5 @@
+MAIN [0][24][3]
+	MOVE s0 0
+	PRINT s0
+END
+// Number of  vars after packing = 0; Number of Spilled vars = 0

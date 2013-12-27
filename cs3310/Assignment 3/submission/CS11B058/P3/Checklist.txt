@@ -1,0 +1,29 @@
+1) Have you tarred + zipped the file as XXXXXXXX.P3.tar.gz (your 8-digit roll number) ?
+Yes
+
+2) Does your tar.gz file expand (by using the command tar xvzf) to the directory named XXXXXXXX (your 8-digit roll number) ?
+Yes
+
+3) Does directory named XXXXXXXX(your 8-digit roll number) contain exactly one subdirectory named P3.
+Yes
+
+4) Does your folder P3 contains P3.java, as the main file, that can be compiled using javac?
+Yes
+
+5) Does your folder P3 contains Checklist.txt?
+Yes
+
+6) Have you removed all the class files and jar files from your tar ball?
+Yes
+
+7) Does your P3.java take input from Standard Input (for usage of redirection) ?
+Yes
+
+8) Does your P3.java write output to Standard Output (for usage of redirection) ?
+Yes
+
+9) Have you removed all the debugging messages that your program may output?
+Yes
+
+10) Is (some part of) the assignment plagiarized? 
+No

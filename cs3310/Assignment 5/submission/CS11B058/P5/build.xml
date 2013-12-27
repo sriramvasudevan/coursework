@@ -1,0 +1,19 @@
+<!-- ANT build.xml for CS3310 P5 -->
+<!-- Sriram V. (CS11B058) -->
+
+<!-- Set default as build -->
+<project default="build">
+    <target name="build">
+        <!-- Run javac on current directory. Default settings
+             let .class files go to same folders as .java
+             files -->
+        <javac srcdir="." />
+    </target>
+    <target name="clean">
+        <!-- Delete .class files in current directory as well
+             as all subdirectories -->
+        <delete>
+            <fileset dir="." includes="**/*.class" />
+        </delete>
+    </target>
+</project>
