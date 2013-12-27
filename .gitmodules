@@ -1,0 +1,6 @@
+[submodule "cs6380/travelling-salesman-problem"]
+	path = cs6380/travelling-salesman-problem
+	url = git@github.com:sriramvasudevan/travelling-salesman-problem.git
+[submodule "cs6380/ultimate-tic-tac-toe"]
+	path = cs6380/ultimate-tic-tac-toe
+	url = git@github.com:sriramvasudevan/ultimate-tic-tac-toe.git
