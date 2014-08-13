@@ -7,3 +7,6 @@
 [submodule "cs3700/space-database-app"]
 	path = cs3700/space-database-app
 	url = git@github.com:sriramvasudevan/space-database-app.git
+[submodule "cs3410/libreoffice"]
+	path = cs3410/libreoffice
+	url = git@github.com:sriramvasudevan/core.git
