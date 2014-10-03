@@ -1,4 +1,4 @@
-CSE Lab Courses at IIT-M
-========================
+IIT-M Assignments
+=================
 
 Contains code for various courses undertaken.
