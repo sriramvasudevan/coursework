@@ -10,3 +10,6 @@
 [submodule "cs3410/libreoffice"]
 	path = cs3410/libreoffice
 	url = git@github.com:sriramvasudevan/core.git
+[submodule "cs6370/NLP"]
+	path = cs6370/NLP
+	url = git@github.com:aravindsankar28/NLP.git
