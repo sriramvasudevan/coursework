@@ -13,3 +13,6 @@
 [submodule "cs6370/NLP"]
 	path = cs6370/NLP
 	url = git@github.com:aravindsankar28/NLP.git
+[submodule "cs4110/csd-lab"]
+	path = cs4110/csd-lab
+	url = git@github.com:sriramvasudevan/csd-lab.git
